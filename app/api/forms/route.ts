@@ -8,6 +8,7 @@ export interface FormRow {
   Timestamp?: string | Date;
   Line?: "2-1호기" | "2-2호기" | string;
   Machine?: string;
+  AlarmCode?: string;
   Symptom?: string;
   Request?: string;
   Requester?: string;

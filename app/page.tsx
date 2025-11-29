@@ -6,6 +6,7 @@ import type { FormRow } from "@/app/api/forms/route";
 type FormPayload = Omit<FormRow, "Timestamp"> & {
   line: string;
   machine: string;
+  alarmCode?: string;
   symptom: string;
   request: string;
   requester: string;
@@ -18,6 +19,7 @@ export default function NewFormPage() {
   const [form, setForm] = useState<FormPayload>({
     line: "2-1호기",
     machine: "TW",
+    alarmCode: "",
     symptom: "",
     request: "",
     requester: "",
@@ -27,6 +29,7 @@ export default function NewFormPage() {
   const validateForm = (form: FormPayload): string | null => {
     if (!form.line) return "호기를 선택해주세요.";
     if (!form.machine) return "Machine을 선택해주세요.";
+    if (!form.alarmCode?.trim()) return "알람 코드를 입력해주세요.";
     if (!form.symptom.trim()) return "현상을 입력해주세요.";
     if (!form.request.trim()) return "요청사항을 입력해주세요.";
     if (!form.requester.trim()) return "요청자를 입력해주세요.";
@@ -75,6 +78,7 @@ export default function NewFormPage() {
       setForm({
         line: "2-1호기",
         machine: "TW",
+        alarmCode: "",
         symptom: "",
         request: "",
         requester: "",
@@ -127,6 +131,18 @@ export default function NewFormPage() {
                 <option value="CA">CA</option>
                 <option value="EL">EL</option>
               </select>
+            </div>
+            <div>
+              <label className="block mb-1 font-medium">
+                알람 코드 (Alarm Code)
+              </label>
+              <input
+                name="alarmCode"
+                value={form.alarmCode ?? ""}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+                placeholder=""
+              />
             </div>
           </div>
 
