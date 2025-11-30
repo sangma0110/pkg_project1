@@ -85,7 +85,7 @@ export default function NewFormPage() {
       await navigator.clipboard.writeText(previewText);
       setSuccessMessage("업로드 및 클립보드에 Text 가 복사 되었습니다.");
 
-      const res = await fetch("/api/forms", {
+      const res = await fetch("/api/forms?type=alarm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
