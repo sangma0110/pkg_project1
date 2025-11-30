@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { FormRow } from "@/app/api/forms/route";
+import type { FormRow } from "@/app/api/route";
 
 interface GetResponse {
   status: "success" | "error";
@@ -11,7 +11,6 @@ interface GetResponse {
 
 const PAGE_SIZE = 20;
 
-// 🔹 ESST 제어 이력 시트 헤더 순서에 맞춰 고정
 const COLUMNS = [
   "No.",
   "타임스탬프",
@@ -33,7 +32,7 @@ export default function FormsViewPage() {
   useEffect(() => {
     const fetchRows = async () => {
       try {
-        const res = await fetch("/api/forms");
+        const res = await fetch("/api/forms?type=control");
         const json = (await res.json()) as GetResponse;
 
         if (json.status !== "success") {
@@ -83,18 +82,6 @@ export default function FormsViewPage() {
         <h1 className="text-3xl font-bold mb-4 text-center">
           ESST 제어 이력 목록
         </h1>
-
-        {/* 👉 안내 문장 (지정한 위치에서 줄바꿈) */}
-        <p className="text-sm font-semibold mb-6 text-center leading-relaxed">
-          ESST PKG 제어 이력 관리 시트로 요청 사항 업데이트 부탁 드립니다.
-          <br />
-          (현장에서 즉 조치 필요 사항 제외 모두 요청 양식 맞춰서 진행 부탁
-          드립니다.)
-          <br />
-          현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나,
-          <br />
-          조치 완료된 사항 내역 공유 예정입니다.
-        </p>
 
         <div className="overflow-x-auto border rounded">
           <table className="min-w-full text-sm">

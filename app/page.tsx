@@ -1,280 +1,70 @@
+// app/page.tsx
 "use client";
 
-import { useState, FormEvent, ChangeEvent } from "react";
-
-type Status = null | "loading" | "success" | "error";
-
-type FormPayload = {
-  targetLine: string; // 대상 호기 (C열)
-  machine: string; // Machine (D열)
-  symptom: string; // 현상 (E열)
-  requester: string; // 요청자 (F열)
-  requestDetail: string; // 요청 내용 (G열)
-  actionDetail: string; // 조치 내용 (H열)
-  completed: string; // 완료 여부 (I열)
-};
-
-const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1KwU6JWp-DG_Kr7Ng4Z5zLB_xpxH6o5SZutwXPB5VLM8/edit?gid=991199097#gid=991199097";
-
-export default function NewFormPage() {
-  const [form, setForm] = useState<FormPayload>({
-    targetLine: "2-1",
-    machine: "TW",
-    symptom: "",
-    requester: "",
-    requestDetail: "",
-    actionDetail: "",
-    completed: "미완료",
-  });
-
-  const [status, setStatus] = useState<Status>(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showPreview, setShowPreview] = useState(false);
-
-  // --- 공통 유효성 검사 ---
-  const validateForm = (f: FormPayload): string | null => {
-    if (!f.targetLine) return "대상 호기를 선택해주세요.";
-    if (!f.machine) return "Machine을 선택해주세요.";
-    if (!f.symptom.trim()) return "현상을 입력해주세요.";
-    if (!f.requester.trim()) return "요청자를 입력해주세요.";
-    if (!f.requestDetail.trim()) return "요청 내용을 입력해주세요.";
-    if (!f.actionDetail.trim()) return "조치 내용을 입력해주세요.";
-    if (!f.completed.trim()) return "완료 여부를 선택해주세요.";
-    return null;
-  };
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setStatus(null);
-    setErrorMessage("");
-  };
-
-  // 1단계: 양식 생성 버튼
-  const handleGeneratePreview = () => {
-    const err = validateForm(form);
-    if (err) {
-      setStatus("error");
-      setErrorMessage(err);
-      setShowPreview(false);
-      return;
-    }
-    setStatus(null);
-    setErrorMessage("");
-    setShowPreview(true);
-  };
-
-  // 2단계: 실제 업로드 (녹색 버튼)
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const err = validateForm(form);
-    if (err) {
-      setStatus("error");
-      setErrorMessage(err);
-      return;
-    }
-
-    setStatus("loading");
-    setErrorMessage("");
-
-    try {
-      await navigator.clipboard.writeText(previewText);
-      console.log("클립보드 복사 완료");
-
-      const res = await fetch("/api/forms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      const json = await res.json();
-      if (json.status !== "success") {
-        throw new Error(json.message ?? "저장 실패");
-      }
-
-      setStatus("success");
-      setShowPreview(false);
-      setForm({
-        targetLine: "2-1",
-        machine: "TW",
-        symptom: "",
-        requester: "",
-        requestDetail: "",
-        actionDetail: "",
-        completed: "미완료",
-      });
-    } catch (err: any) {
-      setStatus("error");
-      setErrorMessage(err.message ?? "Unknown error");
-    }
-  };
-
-  // ----- PD 양식 미리보기 텍스트 -----
-  const now = new Date();
-  const formattedNow = new Intl.DateTimeFormat("ko-KR", {
-    dateStyle: "long",
-    timeStyle: "short",
-    timeZone: "America/Toronto",
-  }).format(now);
-
-  const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
-
-  const previewText = `[제어 요청 공유]
-  1. 시간 : ${formattedNow}
-  2. 대상 호기 : ${F(form.targetLine)}
-  3. Machine : ${F(form.machine)}
-  4. 현상 : ${F(form.symptom)}
-  5. 요청자 : ${F(form.requester)}
-  6. 요청 내용 : ${F(form.requestDetail)}
-  7. 조치 : ${F(form.actionDetail)}`;
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
-      <div className="w-full max-w-2xl">
-        <h1 className="text-3xl font-bold mb-8 text-center">
-          ESST 제어 요청 Form
-        </h1>
+    <main className="min-h-screen bg-white text-black flex items-start justify-center pt-24 px-4">
+      <div className="w-full max-w-3xl space-y-8">
+        {/* 제목 / 소개 */}
+        <section className="space-y-3">
+          <h1 className="text-3xl font-extrabold tracking-tight">
+            ESST PKG 관리 시스템
+          </h1>
+          <p className="text-sm text-gray-700">
+            PKG 설비 관련{" "}
+            <span className="font-medium">제어 · 알람 · 파손품 · 파라미터</span>{" "}
+            요청을 등록하고 이력을 관리하기 위한 내부 시스템입니다.
+          </p>
+        </section>
 
-        <p className="text-l font-bold mb-8 text-center">
-          ESST PKG 제어 이력 관리 시트로 요청 사항 업데이트 부탁 드립니다.
-          <br />
-          (현장에서 즉 조치 필요 사항 제외 모두 요청 양식 맞춰서 진행 부탁
-          드립니다.)
-          <br />
-          현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나, 조치
-          완료된 사항 내역 공유 예정입니다.
-        </p>
-
-        <form
-          onSubmit={handleSubmit}
-          className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
-        >
-          {/* 대상 호기 + Machine */}
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block mb-1 font-medium">대상 호기</label>
-              <select
-                name="targetLine"
-                value={form.targetLine}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
-              >
-                <option value="1-1호기">1-1</option>
-                <option value="1-2호기">1-2</option>
-                <option value="2-1호기">2-1</option>
-                <option value="2-2호기">2-2</option>
-                <option value="3-1호기">3-1</option>
-                <option value="3-2호기">3-2</option>
-              </select>
-            </div>
-            <div className="flex-1">
-              <label className="block mb-1 font-medium">Machine</label>
-              <select
-                name="machine"
-                value={form.machine}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
-              >
-                <option value="TW">TW</option>
-                <option value="CA">CA</option>
-                <option value="EL">EL</option>
-              </select>
-            </div>
+        {/* 사용 방법 안내 */}
+        <section className="bg-white rounded-xl space-y-4">
+          <h2 className="text-xl font-semibold">관리자</h2>
+          <div className="space-y-1 text-m text-gray-800">
+            <p>ESST: 설비 기술팀 양세민 사원 / 공정 기술팀 김도우 선임</p>
+            <p>PR: 이승원 선임 연구원 / 이상민 선임</p>
+            <br />
           </div>
 
-          {/* 현상 */}
-          <div>
-            <label className="block mb-1 font-medium">현상</label>
-            <textarea
-              name="symptom"
-              value={form.symptom}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
-            />
-          </div>
+          <h2 className="text-xl font-semibold">
+            ESST PKG 관리 시스템 사용 방법
+          </h2>
 
-          {/* 요청자 */}
-          <div>
-            <label className="block mb-1 font-medium">요청자</label>
-            <input
-              name="requester"
-              value={form.requester}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
-            />
-          </div>
+          <p className="text-m text-gray-700">
+            화면 상단 우측 메뉴에서{" "}
+            <span className="font-medium">“신규 등록”</span> 또는{" "}
+            <span className="font-medium">“요청 목록”</span>을 클릭하면 아래와
+            같은 하위 항목이 펼쳐집니다.
+          </p>
 
-          {/* 요청 내용 */}
-          <div>
-            <label className="block mb-1 font-medium">요청 내용</label>
-            <textarea
-              name="requestDetail"
-              value={form.requestDetail}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
-            />
-          </div>
+          <ul className="text-sm text-gray-700 list-disc pl-5 space-y-1">
+            <li>제어</li>
+            <li>알람</li>
+            <li>파손품</li>
+            <li>파라미터</li>
+          </ul>
 
-          {/* 조치 내용 */}
-          <div>
-            <label className="block mb-1 font-medium">조치 내용</label>
-            <textarea
-              name="actionDetail"
-              value={form.actionDetail}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
-            />
-          </div>
+          <p className="text-m text-gray-700">
+            각 항목을 선택하면 해당 유형에 대한 페이지로 이동합니다.
+          </p>
 
-          {/* 1단계 버튼 */}
-          <button
-            type="button"
-            onClick={handleGeneratePreview}
-            className="mt-4 w-full px-4 py-3 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
-          >
-            양식 생성하기
-          </button>
+          <ul className="text-m text-gray-700 list-disc pl-5 space-y-1">
+            <li>
+              <span className="font-medium">신규 등록 &gt; 항목 선택</span> :
+              새로운 요청 사항을 등록할 때 사용합니다.
+            </li>
+            <li>
+              <span className="font-medium">요청 목록 &gt; 항목 선택</span> :
+              등록된 요청 이력과 진행 현황을 조회할 수 있습니다.
+            </li>
+          </ul>
 
-          {status === "error" && (
-            <p className="text-red-600 text-sm mt-1">{errorMessage}</p>
-          )}
-
-          {/* 2단계: 미리보기 + 업로드 버튼들 */}
-          {showPreview && (
-            <div className="mt-6 flex flex-col gap-4">
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed bg-gray-50 border rounded p-4">
-                {previewText}
-              </pre>
-
-              <button
-                type="submit"
-                disabled={status === "loading"}
-                className="w-full px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white disabled:opacity-40"
-              >
-                {status === "loading" ? "전송 중..." : "업로드 및 Text 복사"}
-              </button>
-
-              <a
-                href={SHEET_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full text-center px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
-              >
-                ESST 제어 이력 Sheet 열기
-              </a>
-
-              {status === "success" && (
-                <p className="text-green-600 text-sm mt-1">
-                  성공적으로 저장되었습니다.
-                </p>
-              )}
-            </div>
-          )}
-        </form>
+          <p className="text-sm text-red-500">
+            ※ 현장에서 즉시 조치가 필요한 사항을 제외한 모든 요청은 ESST PKG
+            관리 Sheet 양식에 맞춰 등록해 주세요.
+          </p>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

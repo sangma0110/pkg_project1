@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
+import Navbar from "./components/NavBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,24 +16,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className="!bg-white !text-black">
-      <body className="min-h-screen bg-white text-black">
-        {/* 상단 네비게이션 바 */}
-        <header className="border-b bg-white text-black">
-          <div className="mx-auto max-w-5xl flex items-center justify-between px-6 py-3">
-            <div className="font-bold text-lg">
-              <Link href="/">ESST PKG 관리 Sheet</Link>
-            </div>
-            <nav className="flex gap-4 text-sm">
-              <Link href="/" className="hover:underline">
-                신규 등록
-              </Link>
-              <Link href="/view/controlView" className="hover:underline">
-                요청 목록
-              </Link>
-            </nav>
-          </div>
-        </header>
-
+      <body className="min-h-screen bg-white text-black mt-12">
+        <Navbar />
         {/* 페이지 내용 */}
         <main className="mx-auto max-w-5xl bg-white">{children}</main>
       </body>
