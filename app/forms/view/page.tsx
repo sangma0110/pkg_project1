@@ -11,11 +11,23 @@ interface GetResponse {
 
 const PAGE_SIZE = 20;
 
+// 🔹 시트 헤더 순서에 맞춰서 컬럼을 고정
+const COLUMNS = [
+  "요청 시간",
+  "Line",
+  "Machine",
+  "알람 코드",
+  "현상",
+  "요청사항",
+  "요청자",
+  "조치사항",
+];
+
 export default function FormsViewPage() {
   const [rows, setRows] = useState<FormRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1); // 현재 페이지
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const fetchRows = async () => {
@@ -54,8 +66,6 @@ export default function FormsViewPage() {
     );
   }
 
-  const columns = Object.keys(rows[0]);
-
   // 페이지네이션 계산
   const totalPages = Math.ceil(rows.length / PAGE_SIZE);
   const currentPage = Math.min(page, totalPages);
@@ -75,7 +85,7 @@ export default function FormsViewPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-100">
               <tr>
-                {columns.map((col) => (
+                {COLUMNS.map((col) => (
                   <th
                     key={col}
                     className="px-3 py-2 border-b text-left font-bold text-gray-900 whitespace-nowrap"
@@ -89,11 +99,14 @@ export default function FormsViewPage() {
             <tbody>
               {pageRows.map((row, rowIndex) => (
                 <tr key={startIndex + rowIndex} className="hover:bg-gray-50">
-                  {columns.map((col) => {
+                  {COLUMNS.map((col) => {
                     const isLongText =
                       col === "현상" ||
                       col === "요청사항" ||
                       col === "조치사항";
+
+                    // row 가 FormRow 타입이라 TS가 row[col] 에 대해 불평할 수 있어서 any 캐스팅
+                    const value = (row as any)[col];
 
                     return (
                       <td
@@ -101,11 +114,11 @@ export default function FormsViewPage() {
                         className={[
                           "px-3 py-2 border-b text-gray-800 align-top",
                           isLongText
-                            ? "max-w-xl whitespace-pre-wrap break-words" // 긴 텍스트용
-                            : "whitespace-nowrap", // 나머지는 한 줄
+                            ? "max-w-xl whitespace-pre-wrap break-words"
+                            : "whitespace-nowrap",
                         ].join(" ")}
                       >
-                        {formatCell(row[col], col)}
+                        {formatCell(value, col)}
                       </td>
                     );
                   })}
@@ -146,8 +159,8 @@ export default function FormsViewPage() {
 function formatCell(value: any, col: string): string {
   if (value == null) return "";
 
-  // Timestamp 컬럼일 때만 날짜 포맷
-  if (col.toLowerCase().includes("time")) {
+  // 🔹 "요청 시간" 컬럼만 날짜 포맷 적용
+  if (col === "요청 시간" || col.toLowerCase().includes("time")) {
     const date = value instanceof Date ? value : new Date(value);
     if (isNaN(date.getTime())) return String(value);
 
@@ -161,15 +174,11 @@ function formatCell(value: any, col: string): string {
       hour12: false,
     };
 
-    // "YYYY/MM/DD HH:mm"
-    const formatted = new Intl.DateTimeFormat("en-CA", options)
+    return new Intl.DateTimeFormat("en-CA", options)
       .format(date)
       .replace(",", "")
-      .trim();
-
-    return formatted;
+      .trim(); // "YYYY/MM/DD HH:mm"
   }
 
-  // 나머지 컬럼들은 그냥 문자열
   return String(value);
 }

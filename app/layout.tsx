@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" className="!bg-white !text-black">
       <body className="bg-white text-black">
         {/* 상단 네비게이션 바 */}
         <header className="border-b bg-white">
