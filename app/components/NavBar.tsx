@@ -15,12 +15,14 @@ export default function Navbar() {
 
   return (
     <nav className="w-full bg-white text-black shadow-sm fixed top-0 left-0 z-50">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold">
+      <div className="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center whitespace-nowrap overflow-hidden">
+        {/* 로고 */}
+        <Link href="/" className="text-xl font-bold truncate max-w-[50vw]">
           ESST PKG 관리 시스템
         </Link>
 
-        <div className="flex gap-8 text-lg font-medium relative select-none">
+        {/* 메뉴 */}
+        <div className="flex gap-6 text-base font-medium select-none items-center">
           {/* 신규 등록 */}
           <div
             className="relative cursor-pointer"
@@ -28,7 +30,7 @@ export default function Navbar() {
           >
             신규 등록
             {openMenu === "new" && (
-              <div className="absolute left-0 mt-2 w-40 bg-white border shadow-lg rounded-lg p-2">
+              <div className="fixed mt-2 left-1/2 transform -translate-x-1/2 w-44 bg-white border shadow-lg rounded-lg p-2">
                 {submenuItems.map((item) => (
                   <Link
                     key={item.key}
@@ -50,7 +52,7 @@ export default function Navbar() {
           >
             요청 목록
             {openMenu === "list" && (
-              <div className="absolute left-0 mt-2 w-40 bg-white border shadow-lg rounded-lg p-2">
+              <div className="fixed mt-2 left-1/2 transform -translate-x-1/2 w-44 bg-white border shadow-lg rounded-lg p-2">
                 {submenuItems.map((item) => (
                   <Link
                     key={item.key}

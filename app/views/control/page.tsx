@@ -58,7 +58,7 @@ export default function FormsViewPage() {
       <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
         <div className="w-full max-w-4xl">
           <h1 className="text-3xl font-bold mb-6 text-center">
-            ESST 제어 이력 목록
+            ESST 제어 이력
           </h1>
           <p className="text-center text-gray-600">데이터가 없습니다.</p>
         </div>
