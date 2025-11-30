@@ -11,16 +11,17 @@ interface GetResponse {
 
 const PAGE_SIZE = 20;
 
-// 🔹 시트 헤더 순서에 맞춰서 컬럼을 고정
+// 🔹 ESST 제어 이력 시트 헤더 순서에 맞춰 고정
 const COLUMNS = [
-  "요청 시간",
-  "Line",
+  "No.",
+  "타임스탬프",
+  "대상 호기",
   "Machine",
-  "알람 코드",
   "현상",
-  "요청사항",
   "요청자",
-  "조치사항",
+  "요청 내용",
+  "조치 내용",
+  "완료 여부",
 ];
 
 export default function FormsViewPage() {
@@ -58,7 +59,7 @@ export default function FormsViewPage() {
       <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
         <div className="w-full max-w-4xl">
           <h1 className="text-3xl font-bold mb-6 text-center">
-            설비 요청 목록
+            ESST 제어 이력 목록
           </h1>
           <p className="text-center text-gray-600">데이터가 없습니다.</p>
         </div>
@@ -79,7 +80,21 @@ export default function FormsViewPage() {
   return (
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
       <div className="w-full max-w-5xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">설비 요청 목록</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">
+          ESST 제어 이력 목록
+        </h1>
+
+        {/* 👉 안내 문장 (지정한 위치에서 줄바꿈) */}
+        <p className="text-sm font-semibold mb-6 text-center leading-relaxed">
+          ESST PKG 제어 이력 관리 시트로 요청 사항 업데이트 부탁 드립니다.
+          <br />
+          (현장에서 즉 조치 필요 사항 제외 모두 요청 양식 맞춰서 진행 부탁
+          드립니다.)
+          <br />
+          현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나,
+          <br />
+          조치 완료된 사항 내역 공유 예정입니다.
+        </p>
 
         <div className="overflow-x-auto border rounded">
           <table className="min-w-full text-sm">
@@ -102,8 +117,8 @@ export default function FormsViewPage() {
                   {COLUMNS.map((col) => {
                     const isLongText =
                       col === "현상" ||
-                      col === "요청사항" ||
-                      col === "조치사항";
+                      col === "요청 내용" ||
+                      col === "조치 내용";
 
                     // row 가 FormRow 타입이라 TS가 row[col] 에 대해 불평할 수 있어서 any 캐스팅
                     const value = (row as any)[col];
@@ -155,12 +170,12 @@ export default function FormsViewPage() {
   );
 }
 
-// Timestamp만 캐나다 표기(YYYY/MM/DD HH:mm), 나머지는 그대로
+// 타임스탬프만 캐나다 표기(YYYY/MM/DD HH:mm), 나머지는 그대로
 function formatCell(value: any, col: string): string {
   if (value == null) return "";
 
-  // 🔹 "요청 시간" 컬럼만 날짜 포맷 적용
-  if (col === "요청 시간" || col.toLowerCase().includes("time")) {
+  // 🔹 "타임스탬프" 컬럼만 날짜 포맷 적용
+  if (col === "타임스탬프" || col.toLowerCase().includes("time")) {
     const date = value instanceof Date ? value : new Date(value);
     if (isNaN(date.getTime())) return String(value);
 
