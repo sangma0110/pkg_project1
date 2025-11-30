@@ -15,40 +15,26 @@ export default function Navbar() {
 
   return (
     <nav className="w-full bg-white text-black shadow-sm fixed top-0 left-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center whitespace-nowrap overflow-hidden">
-        {/* 로고 */}
-        <Link href="/" className="text-xl font-bold truncate max-w-[45vw]">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+        <Link href="/" className="text-xl font-bold">
           ESST PKG 관리 시스템
         </Link>
 
-        {/* 메뉴 */}
-        <div className="flex gap-8 text-lg font-medium select-none">
+        <div className="flex gap-6 text-base font-medium relative select-none">
           {/* 신규 등록 */}
-          <div className="relative">
-            <span
-              className="cursor-pointer"
-              onClick={() => setOpenMenu(openMenu === "new" ? null : "new")}
-            >
-              신규 등록
-            </span>
-
+          <div
+            className="relative cursor-pointer"
+            onClick={() => setOpenMenu(openMenu === "new" ? null : "new")}
+          >
+            신규 등록
             {openMenu === "new" && (
-              <div
-                className="
-                  absolute top-full mt-2
-                  left-0 
-                  w-40
-                  bg-white border shadow-lg rounded-lg p-2
-                  max-w-[calc(100vw-2rem)]
-                  overflow-hidden
-                "
-              >
+              <div className="absolute left-0 mt-2 w-40 bg-white border shadow-lg rounded-lg p-2">
                 {submenuItems.map((item) => (
                   <Link
                     key={item.key}
                     href={`/forms/${item.key}`}
-                    onClick={() => setOpenMenu(null)}
                     className="block px-3 py-2 rounded hover:bg-gray-100"
+                    onClick={() => setOpenMenu(null)}
                   >
                     {item.label}
                   </Link>
@@ -58,31 +44,19 @@ export default function Navbar() {
           </div>
 
           {/* 요청 목록 */}
-          <div className="relative">
-            <span
-              className="cursor-pointer"
-              onClick={() => setOpenMenu(openMenu === "list" ? null : "list")}
-            >
-              요청 목록
-            </span>
-
+          <div
+            className="relative cursor-pointer"
+            onClick={() => setOpenMenu(openMenu === "list" ? null : "list")}
+          >
+            요청 목록
             {openMenu === "list" && (
-              <div
-                className="
-                  absolute top-full mt-2
-                  left-0
-                  w-40
-                  bg-white border shadow-lg rounded-lg p-2
-                  max-w-[calc(100vw-2rem)]
-                  overflow-hidden
-                "
-              >
+              <div className="absolute left-0 mt-2 w-40 bg-white border shadow-lg rounded-lg p-2">
                 {submenuItems.map((item) => (
                   <Link
                     key={item.key}
                     href={`/views/${item.key}`}
-                    onClick={() => setOpenMenu(null)}
                     className="block px-3 py-2 rounded hover:bg-gray-100"
+                    onClick={() => setOpenMenu(null)}
                   >
                     {item.label}
                   </Link>
