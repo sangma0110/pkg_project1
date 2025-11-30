@@ -26,7 +26,7 @@ export default function RootLayout({
               <Link href="/" className="hover:underline">
                 신규 등록
               </Link>
-              <Link href="/forms/controlView" className="hover:underline">
+              <Link href="/view/controlView" className="hover:underline">
                 요청 목록
               </Link>
             </nav>
