@@ -200,11 +200,11 @@ export default function NewFormPage() {
           {/* 수급 방법 */}
           <div>
             <label className="block mb-1 font-medium">수급 방법</label>
-            <input
-              name="resupplyMethodason"
+            <textarea
+              name="supplyMethod"
               value={form.supplyMethod}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
             />
           </div>
 
