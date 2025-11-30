@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { FormRow } from "@/app/api/route";
+import type { FormRow } from "@/app/api/forms/route";
 
 interface GetResponse {
   status: "success" | "error";
