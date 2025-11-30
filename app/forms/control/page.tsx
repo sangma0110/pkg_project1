@@ -35,12 +35,18 @@ export default function NewFormPage() {
 
   // --- 공통 유효성 검사 ---
   const validateForm = (f: FormPayload): string | null => {
-    if (!f.targetLine) return "대상 호기를 선택해주세요.";
-    if (!f.machine) return "Machine을 선택해주세요.";
-    if (!f.symptom.trim()) return "현상을 입력해주세요.";
-    if (!f.requester.trim()) return "요청자를 입력해주세요.";
-    if (!f.requestDetail.trim()) return "요청 내용을 입력해주세요.";
-    if (!f.actionDetail.trim()) return "조치 내용을 입력해주세요.";
+    if (!f.targetLine)
+      return "대상 호기를 선택해주세요. (Please select the line.)";
+    if (!f.machine)
+      return "Machine을 선택해주세요. (Please select the machine.)";
+    if (!f.symptom.trim())
+      return "현상을 입력해주세요. (Please enter the symptom.)";
+    if (!f.requester.trim())
+      return "요청자를 입력해주세요. (Please enter the requester.)";
+    if (!f.requestDetail.trim())
+      return "요청 내용을 입력해주세요. (Please enter the request details.)";
+    if (!f.actionDetail.trim())
+      return "조치 내용을 입력해주세요. (Please enter the action details.)";
     return null;
   };
 
@@ -52,7 +58,6 @@ export default function NewFormPage() {
     setErrorMessage("");
   };
 
-  // 1단계: 양식 생성 버튼
   const handleGeneratePreview = () => {
     const err = validateForm(form);
     if (err) {
@@ -66,7 +71,6 @@ export default function NewFormPage() {
     setShowPreview(true);
   };
 
-  // 2단계: 실제 업로드 (녹색 버튼)
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -82,7 +86,6 @@ export default function NewFormPage() {
 
     try {
       await navigator.clipboard.writeText(previewText);
-      setSuccessMessage("업로드 및 클립보드에 Text 가 복사 되었습니다.");
 
       const res = await fetch("/api/forms?type=control", {
         method: "POST",
@@ -96,6 +99,9 @@ export default function NewFormPage() {
       }
 
       setStatus("success");
+      setSuccessMessage(
+        "업로드 및 클립보드에 Text 가 복사 되었습니다. (Uploaded and copied to clipboard.)"
+      );
       setShowPreview(false);
       setForm({
         targetLine: "2-1",
@@ -122,23 +128,25 @@ export default function NewFormPage() {
 
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
-  const previewText = `[제어 요청 공유]
-  1. 시간 : ${formattedNow}
-  2. 대상 호기 : ${F(form.targetLine)}
+  const previewText = `[제어 요청 공유] [Control Request Sharing]
+  1. 시간(Time) : ${formattedNow}
+  2. 대상 호기(Line) : ${F(form.targetLine)}
   3. Machine : ${F(form.machine)}
-  4. 현상 : ${F(form.symptom)}
-  5. 요청자 : ${F(form.requester)}
-  6. 요청 내용 : ${F(form.requestDetail)}
-  7. 조치 : ${F(form.actionDetail)}`;
+  4. 현상(Symptom) : ${F(form.symptom)}
+  5. 요청자(Requester) : ${F(form.requester)}
+  6. 요청 내용(Request Detail) : ${F(form.requestDetail)}
+  7. 조치(Action Detail) : ${F(form.actionDetail)}`;
 
   return (
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
       <div className="w-full max-w-2xl">
         <h1 className="text-3xl font-bold mb-8 text-center">
           ESST 제어 요청 Form
+          <br />
+          (Control Request Sharing Form)
         </h1>
 
-        <p className="text-l font-bold mb-8 text-center">
+        <p className="text-sm font-bold mb-8 text-center">
           ESST PKG 제어 이력 관리 시트로 요청 사항 업데이트 부탁 드립니다.
           <br />
           (현장에서 즉 조치 필요 사항 제외 모두 요청 양식 맞춰서 진행 부탁
@@ -146,6 +154,16 @@ export default function NewFormPage() {
           <br />
           현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나, 조치
           완료된 사항 내역 공유 예정입니다.
+          <br />
+          <br />
+          Please update request items using the ESST PKG Control History
+          Management Sheet.
+          <br />
+          (Except for issues requiring immediate on-site action, please follow
+          the request form format.)
+          <br />
+          Additional requests or completed action details—excluding urgent
+          on-site actions—will be shared accordingly.
         </p>
 
         <form
@@ -155,7 +173,7 @@ export default function NewFormPage() {
           {/* 대상 호기 + Machine */}
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="block mb-1 font-medium">대상 호기</label>
+              <label className="block mb-1 font-medium">대상 호기(Line)</label>
               <select
                 name="targetLine"
                 value={form.targetLine}
@@ -187,7 +205,7 @@ export default function NewFormPage() {
 
           {/* 현상 */}
           <div>
-            <label className="block mb-1 font-medium">현상</label>
+            <label className="block mb-1 font-medium">현상(Symptom)</label>
             <textarea
               name="symptom"
               value={form.symptom}
@@ -198,7 +216,7 @@ export default function NewFormPage() {
 
           {/* 요청자 */}
           <div>
-            <label className="block mb-1 font-medium">요청자</label>
+            <label className="block mb-1 font-medium">요청자(Requester)</label>
             <input
               name="requester"
               value={form.requester}
@@ -209,7 +227,9 @@ export default function NewFormPage() {
 
           {/* 요청 내용 */}
           <div>
-            <label className="block mb-1 font-medium">요청 내용</label>
+            <label className="block mb-1 font-medium">
+              요청 내용(Request Detail)
+            </label>
             <textarea
               name="requestDetail"
               value={form.requestDetail}
@@ -220,7 +240,9 @@ export default function NewFormPage() {
 
           {/* 조치 내용 */}
           <div>
-            <label className="block mb-1 font-medium">조치 내용</label>
+            <label className="block mb-1 font-medium">
+              조치 내용(Action Detail)
+            </label>
             <textarea
               name="actionDetail"
               value={form.actionDetail}
@@ -235,7 +257,7 @@ export default function NewFormPage() {
             onClick={handleGeneratePreview}
             className="mt-4 w-full px-4 py-3 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
           >
-            양식 생성하기
+            양식 생성하기(Generate Form)
           </button>
 
           {status === "error" && (
@@ -258,7 +280,9 @@ export default function NewFormPage() {
                 disabled={status === "loading"}
                 className="w-full px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white disabled:opacity-40"
               >
-                {status === "loading" ? "전송 중..." : "업로드 및 Text 복사"}
+                {status === "loading"
+                  ? "전송 중... (Sending...)"
+                  : "업로드 및 Text 복사 (Upload & Copy Text)"}
               </button>
 
               <a
@@ -267,12 +291,12 @@ export default function NewFormPage() {
                 rel="noreferrer"
                 className="w-full text-center px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
               >
-                ESST 제어 이력 Sheet 열기
+                ESST 제어 이력 Sheet 열기(Open ESST Control Request Sheet)
               </a>
 
               {status === "success" && (
                 <p className="text-green-600 text-sm mt-1">
-                  성공적으로 저장되었습니다.
+                  성공적으로 저장되었습니다. (Saved Successfully)
                 </p>
               )}
             </div>

@@ -34,7 +34,7 @@ export default function NewFormPage() {
   const initialAssy = "";
 
   const [form, setForm] = useState<FormPayload>({
-    targetLine: "2-1호기",
+    targetLine: "2-1",
     machine: initialMachine,
     unit: initialUnit,
     assy: initialAssy,
@@ -53,16 +53,25 @@ export default function NewFormPage() {
 
   // --- 공통 유효성 검사 ---
   const validateForm = (f: FormPayload): string | null => {
-    if (!f.targetLine) return "대상 호기를 선택해주세요.";
-    if (!f.machine) return "Machine을 선택해주세요.";
-    if (!f.unit.trim()) return "Unit을 선택해주세요.";
-    if (!f.assy.trim()) return "Ass'y를 입력해주세요.";
-    if (!f.actionTime.trim()) return "변경 시간을 입력해주세요.";
-    if (!f.actioner.trim()) return "변경자를 입력해주세요.";
-    if (!f.parameterName.trim()) return "변경한 Parameter를 입력해주세요.";
-    if (!f.before.trim()) return "이전 값을 입력해주세요.";
-    if (!f.after.trim()) return "변경 값을 입력해주세요.";
-    if (!f.reason.trim()) return "변경 사유를 입력해주세요.";
+    if (!f.targetLine)
+      return "대상 호기를 선택해주세요. (Please select the target line.)";
+    if (!f.machine)
+      return "Machine을 선택해주세요. (Please select the machine.)";
+    if (!f.unit.trim()) return "Unit을 선택해주세요. (Please select the unit.)";
+    if (!f.assy.trim())
+      return "Ass'y를 입력해주세요. (Please enter the assembly.)";
+    if (!f.actionTime.trim())
+      return "변경 시간을 입력해주세요. (Please enter the change time.)";
+    if (!f.actioner.trim())
+      return "변경자를 입력해주세요. (Please enter the person who made the change.)";
+    if (!f.parameterName.trim())
+      return "변경한 Parameter를 입력해주세요. (Please enter the parameter changed.)";
+    if (!f.before.trim())
+      return "이전 값을 입력해주세요. (Please enter the previous value.)";
+    if (!f.after.trim())
+      return "변경 값을 입력해주세요. (Please enter the updated value.)";
+    if (!f.reason.trim())
+      return "변경 사유를 입력해주세요. (Please enter the reason for the change.)";
     return null;
   };
 
@@ -123,18 +132,18 @@ export default function NewFormPage() {
 
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
-  const previewText = `[제어 요청 공유]
-  1. 시간 : ${formattedNow}
-  2. 대상 호기 : ${F(form.targetLine)}
+  const previewText = `[파라미터 수정사항 공유] [Parameter Change Update]
+  1. 시간(Time) : ${formattedNow}
+  2. 대상 호기(Line) : ${F(form.targetLine)}
   3. Machine : ${F(form.machine)}
   4. Unit : ${F(form.unit)}
   5. Ass'y : ${F(form.assy)}
-  6. 변경 시간 : ${F(form.actionTime)}
-  7. 변경자 : ${F(form.actioner)}
-  8. 변경 Parameter : ${F(form.parameterName)}
-  9. 이전 값 : ${F(form.before)}
-  10. 변경 값 : ${F(form.after)}
-  11. 변경 사유 : ${F(form.reason)}
+  6. 변경 시간(Changed Time) : ${F(form.actionTime)}
+  7. 변경자(Person In Charge) : ${F(form.actioner)}
+  8. 변경 Parameter(Changed Parameter) : ${F(form.parameterName)}
+  9. 이전 값(Previous Value) : ${F(form.before)}
+  10. 변경 값(Changed Value) : ${F(form.after)}
+  11. 변경 사유(Reason For The Change) : ${F(form.reason)}
   `;
 
   // 2단계: 실제 업로드 (녹색 버튼)
@@ -153,7 +162,6 @@ export default function NewFormPage() {
 
     try {
       await navigator.clipboard.writeText(previewText);
-      setSuccessMessage("업로드 및 클립보드에 Text 가 복사 되었습니다.");
 
       const res = await fetch("/api/forms?type=param", {
         method: "POST",
@@ -167,6 +175,9 @@ export default function NewFormPage() {
       }
 
       setStatus("success");
+      setSuccessMessage(
+        "업로드 및 클립보드에 Text 가 복사 되었습니다. (Uploaded and copied to clipboard.)"
+      );
       setShowPreview(false);
       setForm({
         targetLine: "2-1호기",
@@ -191,9 +202,11 @@ export default function NewFormPage() {
       <div className="w-full max-w-2xl">
         <h1 className="text-3xl font-bold mb-8 text-center">
           ESST Parameter 관리 이력 Form
+          <br />
+          (ESST Parameter Change History Form)
         </h1>
 
-        <p className="text-l font-bold mb-8 text-center">
+        <p className="text-sm font-bold mb-8 text-center">
           ESST PKG Parameter 관리 이력 시트로 관리 이력 업데이트 부탁 드립니다.
           <br />
           (현장에서 즉 조치 필요 사항 제외 모두 요청 양식 맞춰서 진행 부탁
@@ -201,6 +214,15 @@ export default function NewFormPage() {
           <br />
           현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나, 조치
           완료된 사항 내역 공유 예정입니다.
+          <br /> <br />
+          Please update the management history using the ESST PKG Parameter
+          Management History Sheet.
+          <br />
+          (Except for issues that require immediate on-site action, please
+          follow the request form format.)
+          <br />
+          Additional requests or completed action details—excluding urgent
+          on-site actions—will be shared accordingly.
         </p>
 
         <form
@@ -210,7 +232,7 @@ export default function NewFormPage() {
           {/* 대상 호기 + Machine + Unit */}
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="block mb-1 font-medium">대상 호기</label>
+              <label className="block mb-1 font-medium">대상 호기(Line)</label>
               <select
                 name="targetLine"
                 value={form.targetLine}
@@ -272,7 +294,9 @@ export default function NewFormPage() {
 
           {/* 변경 시간 */}
           <div>
-            <label className="block mb-1 font-medium">변경 시간</label>
+            <label className="block mb-1 font-medium">
+              변경 시간(Changed Time)
+            </label>
             <textarea
               name="actionTime"
               value={form.actionTime}
@@ -283,7 +307,9 @@ export default function NewFormPage() {
 
           {/* 변경자 */}
           <div>
-            <label className="block mb-1 font-medium">변경자</label>
+            <label className="block mb-1 font-medium">
+              변경자(Person In Charge)
+            </label>
             <input
               name="actioner"
               value={form.actioner}
@@ -294,7 +320,9 @@ export default function NewFormPage() {
 
           {/* 변경 Parameter */}
           <div>
-            <label className="block mb-1 font-medium">변경 Parameter</label>
+            <label className="block mb-1 font-medium">
+              변경한 파라미터(Changed Parameter)
+            </label>
             <textarea
               name="parameterName"
               value={form.parameterName}
@@ -305,7 +333,9 @@ export default function NewFormPage() {
 
           {/* 이전 값 */}
           <div>
-            <label className="block mb-1 font-medium">이전 값</label>
+            <label className="block mb-1 font-medium">
+              이전 값(Previous Value)
+            </label>
             <textarea
               name="before"
               value={form.before}
@@ -316,7 +346,9 @@ export default function NewFormPage() {
 
           {/* 변경 값 */}
           <div>
-            <label className="block mb-1 font-medium">변경 값</label>
+            <label className="block mb-1 font-medium">
+              변경 값(Changed Value)
+            </label>
             <textarea
               name="after"
               value={form.after}
@@ -327,7 +359,9 @@ export default function NewFormPage() {
 
           {/* 변경 사유 */}
           <div>
-            <label className="block mb-1 font-medium">변경 사유</label>
+            <label className="block mb-1 font-medium">
+              변경 사유(Reason For The Change)
+            </label>
             <textarea
               name="reason"
               value={form.reason}
@@ -342,7 +376,7 @@ export default function NewFormPage() {
             onClick={handleGeneratePreview}
             className="mt-4 w-full px-4 py-3 rounded border bg-white text-black font-semibold hover:bg-black hover:text-white"
           >
-            양식 생성하기
+            양식 생성하기(Generate Form)
           </button>
 
           {status === "error" && (
@@ -364,7 +398,9 @@ export default function NewFormPage() {
                 disabled={status === "loading"}
                 className="w-full px-4 py-2 rounded border bg-white text-black font-semibold hover:bg-black hover:text-white disabled:opacity-40"
               >
-                {status === "loading" ? "전송 중..." : "업로드 및 Text 복사"}
+                {status === "loading"
+                  ? "전송 중... (Sending...)"
+                  : "업로드 및 Text 복사 (Upload & Copy Text)"}
               </button>
 
               <a
@@ -373,12 +409,13 @@ export default function NewFormPage() {
                 rel="noreferrer"
                 className="w-full text-center px-4 py-2 rounded border bg-white text-black font-semibold hover:bg-black hover:text-white"
               >
-                ESST 제어 이력 Sheet 열기
+                ESST 파라미터 관리 이력 Sheet 열기(Open ESST Parameter Change
+                History Sheet)
               </a>
 
               {status === "success" && (
                 <p className="text-green-600 text-sm mt-1">
-                  성공적으로 저장되었습니다.
+                  성공적으로 저장되었습니다. (Saved Successfully)
                 </p>
               )}
             </div>

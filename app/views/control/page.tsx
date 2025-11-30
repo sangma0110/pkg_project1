@@ -13,14 +13,14 @@ const PAGE_SIZE = 20;
 
 const COLUMNS = [
   "No.",
-  "타임스탬프",
-  "대상 호기",
+  "타임스탬프(TimeStamp)",
+  "대상 호기(Line)",
   "Machine",
-  "현상",
-  "요청자",
-  "요청 내용",
-  "조치 내용",
-  "완료 여부",
+  "현상(Symptom)",
+  "요청자(Requester)",
+  "요청 내용(Request Detail)",
+  "조치 내용(Action Detail)",
+  "완료 여부(Completion Status)",
 ];
 
 export default function FormsViewPage() {
@@ -36,12 +36,12 @@ export default function FormsViewPage() {
         const json = (await res.json()) as GetResponse;
 
         if (json.status !== "success") {
-          throw new Error(json.message ?? "조회 실패");
+          throw new Error(json.message ?? "조회 실패(Fail to Look Up)");
         }
 
         setRows(json.rows ?? []);
       } catch (err: any) {
-        setError(err.message ?? "에러 발생");
+        setError(err.message ?? "에러 발생(Error Caused)");
       } finally {
         setLoading(false);
       }
@@ -50,7 +50,7 @@ export default function FormsViewPage() {
     fetchRows();
   }, []);
 
-  if (loading) return <div className="p-8">불러오는 중...</div>;
+  if (loading) return <div className="p-8">불러오는 중...(Loading...)</div>;
   if (error) return <div className="p-8 text-red-600">{error}</div>;
 
   if (!rows.length) {
@@ -58,7 +58,7 @@ export default function FormsViewPage() {
       <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
         <div className="w-full max-w-4xl">
           <h1 className="text-3xl font-bold mb-6 text-center">
-            ESST 제어 이력
+            ESST 제어 이력 목록 (ESST Control Action History List)
           </h1>
           <p className="text-center text-gray-600">데이터가 없습니다.</p>
         </div>
@@ -80,7 +80,7 @@ export default function FormsViewPage() {
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
       <div className="w-full max-w-5xl">
         <h1 className="text-3xl font-bold mb-4 text-center">
-          ESST 제어 이력 목록
+          ESST 제어 이력 목록 (ESST Control Action History List)
         </h1>
 
         <div className="overflow-x-auto border rounded">
@@ -103,11 +103,10 @@ export default function FormsViewPage() {
                 <tr key={startIndex + rowIndex} className="hover:bg-gray-50">
                   {COLUMNS.map((col) => {
                     const isLongText =
-                      col === "현상" ||
-                      col === "요청 내용" ||
-                      col === "조치 내용";
+                      col === "현상(Symptom)" ||
+                      col === "요청 내용(Request Detail)" ||
+                      col === "조치 내용(Action Detail)";
 
-                    // row 가 FormRow 타입이라 TS가 row[col] 에 대해 불평할 수 있어서 any 캐스팅
                     const value = (row as any)[col];
 
                     return (
@@ -133,7 +132,8 @@ export default function FormsViewPage() {
         {/* 페이지네이션 바 */}
         <div className="flex items-center justify-between mt-4 text-sm text-gray-700">
           <span>
-            총 {rows.length}건 | 페이지 {currentPage} / {totalPages}
+            총 {rows.length}건 | 페이지 {currentPage} / {totalPages} (Total{" "}
+            {rows.length} Items | Page {currentPage} / {totalPages})
           </span>
           <div className="flex items-center gap-2">
             <button
@@ -141,14 +141,14 @@ export default function FormsViewPage() {
               disabled={currentPage === 1}
               className="px-3 py-1 border rounded disabled:opacity-40"
             >
-              이전
+              이전(Prev)
             </button>
             <button
               onClick={handleNext}
               disabled={currentPage === totalPages}
               className="px-3 py-1 border rounded disabled:opacity-40"
             >
-              다음
+              다음(Next)
             </button>
           </div>
         </div>
@@ -161,8 +161,7 @@ export default function FormsViewPage() {
 function formatCell(value: any, col: string): string {
   if (value == null) return "";
 
-  // 🔹 "타임스탬프" 컬럼만 날짜 포맷 적용
-  if (col === "타임스탬프" || col.toLowerCase().includes("time")) {
+  if (col === "타임스탬프(TimeStamp)" || col.toLowerCase().includes("time")) {
     const date = value instanceof Date ? value : new Date(value);
     if (isNaN(date.getTime())) return String(value);
 

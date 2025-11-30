@@ -31,11 +31,15 @@ export default function NewFormPage() {
 
   // --- 공통 유효성 검사 ---
   const validateForm = (f: FormPayload): string | null => {
-    if (!f.damagedLine) return "파손 호기를 선택해주세요.";
-    if (!f.item) return "품목을 입력해주세요.";
-    if (!f.modelNumber.trim()) return "형번을 입력해주세요.";
-    if (!f.quantity.trim()) return "수량을 입력해주세요.";
-    if (!f.supplyMethod.trim()) return "수급 방법을 입력해주세요.";
+    if (!f.damagedLine)
+      return "파손 호기를 선택해주세요. (Please select the damaged line.)";
+    if (!f.item) return "품목을 입력해주세요. (Please enter the item.)";
+    if (!f.modelNumber.trim())
+      return "형번을 입력해주세요. (Please enter the model number.)";
+    if (!f.quantity.trim())
+      return "수량을 입력해주세요. (Please enter the quantity.)";
+    if (!f.supplyMethod.trim())
+      return "수급 방법을 입력해주세요. (Please enter the supply method.)";
     return null;
   };
 
@@ -77,7 +81,6 @@ export default function NewFormPage() {
 
     try {
       await navigator.clipboard.writeText(previewText);
-      setSuccessMessage("업로드 및 클립보드에 Text 가 복사 되었습니다.");
 
       const res = await fetch("/api/forms?type=damaged", {
         method: "POST",
@@ -91,6 +94,9 @@ export default function NewFormPage() {
       }
 
       setStatus("success");
+      setSuccessMessage(
+        "업로드 및 클립보드에 Text 가 복사 되었습니다. (Uploaded and copied to clipboard.)"
+      );
       setShowPreview(false);
       setForm({
         damagedLine: "2-1",
@@ -115,19 +121,21 @@ export default function NewFormPage() {
 
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
-  const previewText = `[Alarm 조치 이력 공유]
-  1. 시간 : ${formattedNow}
-  2. 파손 호기 : ${F(form.damagedLine)}
-  3. 품목 : ${F(form.item)}
-  4. 형번 : ${F(form.modelNumber)}
-  5. 수량 : ${F(form.quantity)}
-  6. 수급 방법 : ${F(form.supplyMethod)} `;
+  const previewText = `[파손품 조치 이력 공유] [Damaged Item Action History Sharing]
+  1. 시간(Time) : ${formattedNow}
+  2. 파손 호기(Damaged Line) : ${F(form.damagedLine)}
+  3. 품목(Item) : ${F(form.item)}
+  4. 형번(Model Number) : ${F(form.modelNumber)}
+  5. 수량(Quantity) : ${F(form.quantity)}
+  6. 수급 방법(Supply Method) : ${F(form.supplyMethod)} `;
 
   return (
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
       <div className="w-full max-w-2xl">
         <h1 className="text-3xl font-bold mb-8 text-center">
           ESST 파손품 관리 이력 Form
+          <br />
+          (Damaged Item Action History Sharing Form)
         </h1>
 
         <p className="text-l font-bold mb-8 text-center">
@@ -138,6 +146,16 @@ export default function NewFormPage() {
           <br />
           현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나, 조치
           완료된 사항 내역 공유 예정입니다.
+          <br />
+          <br />
+          Please update the management details using the ESST Damaged Item
+          Management History Sheet.
+          <br />
+          (Except for issues that require immediate on-site action, please
+          follow the action form format.)
+          <br />
+          Additional requests or completed action details—excluding urgent
+          on-site actions—will be shared accordingly.
         </p>
 
         <form
@@ -147,7 +165,9 @@ export default function NewFormPage() {
           {/* 파손 호기*/}
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="block mb-1 font-medium">파손 호기</label>
+              <label className="block mb-1 font-medium">
+                파손 호기(Damaged Line)
+              </label>
               <select
                 name="damagedLine"
                 value={form.damagedLine}
@@ -166,7 +186,7 @@ export default function NewFormPage() {
 
           {/* 품목 */}
           <div>
-            <label className="block mb-1 font-medium">품목</label>
+            <label className="block mb-1 font-medium">품목(Item)</label>
             <textarea
               name="item"
               value={form.item}
@@ -177,7 +197,7 @@ export default function NewFormPage() {
 
           {/* 형번 */}
           <div>
-            <label className="block mb-1 font-medium">형번</label>
+            <label className="block mb-1 font-medium">형번(Model Number)</label>
             <textarea
               name="modelNumber"
               value={form.modelNumber}
@@ -188,7 +208,7 @@ export default function NewFormPage() {
 
           {/* 수량 */}
           <div>
-            <label className="block mb-1 font-medium">수량</label>
+            <label className="block mb-1 font-medium">수량(Quantity)</label>
             <textarea
               name="quantity"
               value={form.quantity}
@@ -199,7 +219,9 @@ export default function NewFormPage() {
 
           {/* 수급 방법 */}
           <div>
-            <label className="block mb-1 font-medium">수급 방법</label>
+            <label className="block mb-1 font-medium">
+              수급 방법(Supply Method)
+            </label>
             <textarea
               name="supplyMethod"
               value={form.supplyMethod}
@@ -237,7 +259,9 @@ export default function NewFormPage() {
                 disabled={status === "loading"}
                 className="w-full px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white disabled:opacity-40"
               >
-                {status === "loading" ? "전송 중..." : "업로드 및 Text 복사"}
+                {status === "loading"
+                  ? "전송 중... (Sending...)"
+                  : "업로드 및 Text 복사 (Upload & Copy Text)"}
               </button>
 
               <a
@@ -246,12 +270,13 @@ export default function NewFormPage() {
                 rel="noreferrer"
                 className="w-full text-center px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
               >
-                ESST 파손품 관리 이력 Sheet 열기
+                ESST 파손품 관리 이력 Sheet 열기 (Open Damaged Item Action
+                History Sheet)
               </a>
 
               {status === "success" && (
                 <p className="text-green-600 text-sm mt-1">
-                  성공적으로 저장되었습니다.
+                  성공적으로 저장되었습니다. (Saved Successfully)
                 </p>
               )}
             </div>

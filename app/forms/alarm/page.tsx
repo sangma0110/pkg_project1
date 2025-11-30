@@ -35,13 +35,20 @@ export default function NewFormPage() {
 
   // --- 공통 유효성 검사 ---
   const validateForm = (f: FormPayload): string | null => {
-    if (!f.targetLine) return "대상 호기를 선택해주세요.";
-    if (!f.actionTime) return "조치 날짜 & 시간을 입력해주세요.";
-    if (!f.alarmCode.trim()) return "알람 코드를 입력해주세요.";
-    if (!f.symptom.trim()) return "현상를 입력해주세요.";
-    if (!f.reason.trim()) return "원인을 입력해주세요.";
-    if (!f.actionDetail.trim()) return "조치 사항을 입력해주세요.";
-    if (!f.actioner.trim()) return "조치 인원을 선택해주세요.";
+    if (!f.targetLine)
+      return "대상 호기를 선택해주세요. (Please select the line.)";
+    if (!f.actionTime)
+      return "조치 날짜 & 시간을 입력해주세요. (Please enter the action date & time.)";
+    if (!f.alarmCode.trim())
+      return "알람 코드를 입력해주세요. (Please enter the alarm code.)";
+    if (!f.symptom.trim())
+      return "현상을 입력해주세요. (Please enter the symptom.)";
+    if (!f.reason.trim())
+      return "원인을 입력해주세요. (Please enter the cause.)";
+    if (!f.actionDetail.trim())
+      return "조치 사항을 입력해주세요. (Please enter the action details.)";
+    if (!f.actioner.trim())
+      return "조치 인원을 선택해주세요. (Please select the person in charge.)";
     return null;
   };
 
@@ -123,23 +130,25 @@ export default function NewFormPage() {
 
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
-  const previewText = `[Alarm 조치 이력 공유]
-  1. 시간 : ${formattedNow}
-  2. 대상 호기 : ${F(form.targetLine)}
-  3. 조치 날짜 & 시간 : ${F(form.actionTime)}
-  4. 현상 : ${F(form.symptom)}
-  5. 원인 : ${F(form.reason)}
-  6. 조치 사항 : ${F(form.actionDetail)}
-  7. 조치 인원 : ${F(form.actioner)}`;
+  const previewText = `[Alarm 조치 이력 공유] [Alarm Action History Sharing]
+  1. 시간(Time) : ${formattedNow}
+  2. 대상 호기(Line) : ${F(form.targetLine)}
+  3. 조치 날짜 & 시간(Action Date & Time) : ${F(form.actionTime)}
+  4. 현상(Symptom) : ${F(form.symptom)}
+  5. 원인(Cause) : ${F(form.reason)}
+  6. 조치 사항(Action Detail) : ${F(form.actionDetail)}
+  7. 조치 인원(Person In Charge) : ${F(form.actioner)}`;
 
   return (
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
       <div className="w-full max-w-2xl">
         <h1 className="text-3xl font-bold mb-8 text-center">
           ESST Alarm 조치 이력 Form
+          <br />
+          (ESST Alarm Action History Sharing Form)
         </h1>
 
-        <p className="text-l font-bold mb-8 text-center">
+        <p className="text-sm font-bold mb-8 text-center">
           ESST Alarm 조치 이력 관리 시트로 조치 사항 업데이트 부탁 드립니다.
           <br />
           (현장에서 즉 조치 필요 사항 제외 모두 조치 양식 맞춰서 진행 부탁
@@ -147,6 +156,17 @@ export default function NewFormPage() {
           <br />
           현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나, 조치
           완료된 사항 내역 공유 예정입니다.
+          <br />
+          <br />
+          Please update the action details using the ESST Alarm Action History
+          Management Sheet.
+          <br />
+          (Except for issues that require immediate on-site action, please
+          follow the action form format.)
+          <br />
+          Any additional requests or completed action details—excluding urgent
+          on-site actions—will be shared accordingly.
+          <br />
         </p>
 
         <form
@@ -156,7 +176,7 @@ export default function NewFormPage() {
           {/* 대상 호기 + Machine */}
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="block mb-1 font-medium">대상 호기</label>
+              <label className="block mb-1 font-medium">대상 호기(Line)</label>
               <select
                 name="targetLine"
                 value={form.targetLine}
@@ -175,7 +195,9 @@ export default function NewFormPage() {
 
           {/* 조치 시간 */}
           <div>
-            <label className="block mb-1 font-medium">조치 시간</label>
+            <label className="block mb-1 font-medium">
+              조치 시간(Action Date & Time)
+            </label>
             <textarea
               name="actionTime"
               value={form.actionTime}
@@ -186,7 +208,9 @@ export default function NewFormPage() {
 
           {/* 알람 코드 */}
           <div>
-            <label className="block mb-1 font-medium">알람 코드</label>
+            <label className="block mb-1 font-medium">
+              알람 코드(Alarm Code)
+            </label>
             <textarea
               name="alarmCode"
               value={form.alarmCode}
@@ -197,7 +221,7 @@ export default function NewFormPage() {
 
           {/* 현상 */}
           <div>
-            <label className="block mb-1 font-medium">현상</label>
+            <label className="block mb-1 font-medium">현상(Symptom)</label>
             <textarea
               name="symptom"
               value={form.symptom}
@@ -208,7 +232,7 @@ export default function NewFormPage() {
 
           {/* 원인 */}
           <div>
-            <label className="block mb-1 font-medium">원인</label>
+            <label className="block mb-1 font-medium">원인(Cause)</label>
             <input
               name="reason"
               value={form.reason}
@@ -219,7 +243,9 @@ export default function NewFormPage() {
 
           {/* 조치 내용 */}
           <div>
-            <label className="block mb-1 font-medium">조치 내용</label>
+            <label className="block mb-1 font-medium">
+              조치 내용(Action Detail)
+            </label>
             <textarea
               name="actionDetail"
               value={form.actionDetail}
@@ -230,7 +256,9 @@ export default function NewFormPage() {
 
           {/* 조치 인원 */}
           <div>
-            <label className="block mb-1 font-medium">조치 인원</label>
+            <label className="block mb-1 font-medium">
+              조치 인원(Person In Charge)
+            </label>
             <textarea
               name="actioner"
               value={form.actioner}
@@ -245,15 +273,17 @@ export default function NewFormPage() {
             onClick={handleGeneratePreview}
             className="mt-4 w-full px-4 py-3 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
           >
-            양식 생성하기
+            양식 생성하기(Generate Form)
           </button>
 
           {status === "error" && (
-            <p className="text-red-600 text-sm mt-1">{errorMessage}</p>
+            <p className="text-red-600 text-sm mt-1">{errorMessage}(Error)</p>
           )}
 
           {successMessage && (
-            <p className="mt-2 text-sm text-green-700">{successMessage}</p>
+            <p className="mt-2 text-sm text-green-700">
+              {successMessage} (Success)
+            </p>
           )}
 
           {/* 2단계: 미리보기 + 업로드 버튼들 */}
@@ -268,7 +298,9 @@ export default function NewFormPage() {
                 disabled={status === "loading"}
                 className="w-full px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white disabled:opacity-40"
               >
-                {status === "loading" ? "전송 중..." : "업로드 및 Text 복사"}
+                {status === "loading"
+                  ? "전송 중... (Sending...)"
+                  : "업로드 및 Text 복사 (Upload & Copy Text)"}
               </button>
 
               <a
@@ -277,12 +309,13 @@ export default function NewFormPage() {
                 rel="noreferrer"
                 className="w-full text-center px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
               >
-                ESST Alarm 조치 이력 Sheet 열기
+                ESST Alarm 조치 이력 Sheet 열기 (Open ESST Alarm Action History
+                Sheet)
               </a>
 
               {status === "success" && (
                 <p className="text-green-600 text-sm mt-1">
-                  성공적으로 저장되었습니다.
+                  성공적으로 저장되었습니다. (Saved Successfully)
                 </p>
               )}
             </div>

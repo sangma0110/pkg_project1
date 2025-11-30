@@ -14,12 +14,12 @@ const PAGE_SIZE = 20;
 // 📌 시트 헤더와 동일해야 함
 const COLUMNS = [
   "NO.",
-  "타임스탬프",
-  "파손 호기",
-  "품목",
-  "형번",
-  "수량",
-  "수급 방법",
+  "타임스탬프(TimeStamp)",
+  "파손 호기(Damaged Line)",
+  "품목(Item)",
+  "형번(Model Number)",
+  "수량(Quantity)",
+  "수급 방법(Supply Method)",
 ];
 
 export default function DamagedViewPage() {
@@ -35,11 +35,11 @@ export default function DamagedViewPage() {
         const json = (await res.json()) as GetResponse;
 
         if (json.status !== "success") {
-          throw new Error(json.message ?? "조회 실패");
+          throw new Error(json.message ?? "조회 실패(Failed to Look Up)");
         }
         setRows(json.rows ?? []);
       } catch (err: any) {
-        setError(err.message ?? "에러 발생");
+        setError(err.message ?? "에러 발생(Error Caused)");
       } finally {
         setLoading(false);
       }
@@ -47,15 +47,17 @@ export default function DamagedViewPage() {
     load();
   }, []);
 
-  if (loading) return <div className="p-8">불러오는 중...</div>;
+  if (loading) return <div className="p-8">불러오는 중...(Loading)</div>;
   if (error) return <div className="p-8 text-red-600">{error}</div>;
 
   if (!rows.length) {
     return (
       <div className="min-h-screen bg-white flex justify-center pt-16 px-4">
         <div className="w-full max-w-4xl text-center">
-          <h1 className="text-3xl font-bold mb-6">파손품 이력</h1>
-          <p className="text-gray-600">데이터가 없습니다.</p>
+          <h1 className="text-3xl font-bold mb-6">
+            파손품 이력(Damaged Item History)
+          </h1>
+          <p className="text-gray-600">데이터가 없습니다(No records found)</p>
         </div>
       </div>
     );
@@ -70,7 +72,9 @@ export default function DamagedViewPage() {
   return (
     <div className="min-h-screen bg-white flex justify-center pt-16 px-4">
       <div className="w-full max-w-5xl">
-        <h1 className="text-3xl font-bold mb-4 text-center">파손품 이력</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">
+          파손품 이력(Damaged Item History)
+        </h1>
 
         {/* 스프레드시트 스타일 테이블 */}
         <div className="overflow-x-auto border rounded">
@@ -95,7 +99,9 @@ export default function DamagedViewPage() {
                     const value = row[col];
 
                     const isLong =
-                      col === "품목" || col === "형번" || col === "수급 방법";
+                      col === "품목(Item)" ||
+                      col === "형번(Model Number)" ||
+                      col === "수급 방법(Supply Method)";
 
                     return (
                       <td
@@ -120,7 +126,8 @@ export default function DamagedViewPage() {
         {/* 페이지네이션 */}
         <div className="flex items-center justify-between mt-4 text-sm text-gray-700">
           <span>
-            총 {rows.length}건 | 페이지 {currentPage} / {totalPages}
+            총 {rows.length}건 | 페이지 {currentPage} / {totalPages} (Total{" "}
+            {rows.length} Items | Page {currentPage} / {totalPages})
           </span>
           <div className="flex items-center gap-2">
             <button
@@ -128,14 +135,14 @@ export default function DamagedViewPage() {
               disabled={currentPage === 1}
               className="px-3 py-1 border rounded disabled:opacity-40"
             >
-              이전
+              이전(Prev)
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
               className="px-3 py-1 border rounded disabled:opacity-40"
             >
-              다음
+              다음(Next)
             </button>
           </div>
         </div>
@@ -147,7 +154,7 @@ export default function DamagedViewPage() {
 function formatCell(value: any, col: string): string {
   if (!value) return "";
 
-  if (col === "타임스탬프") {
+  if (col === "타임스탬프(TimeStamp)") {
     const d = new Date(value);
     if (isNaN(d.getTime())) return String(value);
 
