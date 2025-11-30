@@ -50,7 +50,7 @@ export default function Navbar() {
           >
             요청 목록
             {openMenu === "list" && (
-              <div className="absolute left-0 mt-2 w-40 bg-white border shadow-lg rounded-lg p-2">
+              <div className="absolute right-0 mt-2 w-40 bg-white border shadow-lg rounded-lg p-2">
                 {submenuItems.map((item) => (
                   <Link
                     key={item.key}
