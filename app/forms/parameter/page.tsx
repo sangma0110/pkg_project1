@@ -327,7 +327,7 @@ export default function NewFormPage() {
           </div>
 
           {/* 요청자 + 변경자 */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block mb-1 font-medium">
                 요청자(Requester)
@@ -336,7 +336,7 @@ export default function NewFormPage() {
                 name="requester"
                 value={form.requester}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2 bg-white"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               />
             </div>
 
@@ -348,7 +348,7 @@ export default function NewFormPage() {
                 name="actioner"
                 value={form.actioner}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2 bg-white"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               />
             </div>
           </div>
