@@ -221,8 +221,8 @@ export default function NewFormPage() {
               파손 원인(Cause of the Damage)
             </label>
             <textarea
-              name="modelNumber"
-              value={form.modelNumber}
+              name="reason"
+              value={form.reason}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
             />
