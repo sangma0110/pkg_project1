@@ -8,17 +8,19 @@ type FormPayload = {
   targetLine: string; // 대상 호기 (C열)
   machine: string; // Machine (D열)
   unit: string; // 유닛 (E열)
-  assy: string; // ass'y (F열)
-  actionTime: string; // 변경 시간 (G열)
-  actioner: string; // 변경자 (H열)
-  parameterName: string; // 파라미터 이름 (I열)
-  before: string; // 이전 값 (J열)
-  after: string; // 변경 값 (K열)
-  reason: string; // 변경 사유 (L열)
+  category: string; // 변경 유형 (F열)
+  assy: string; // ass'y (G열)
+  actionTime: string; // 변경 시간 (H열)
+  requester: string; // 요청자 (I)
+  actioner: string; // 변경자 (J열)
+  parameterName: string; // 파라미터 이름 (K열)
+  before: string; // 이전 값 (L열)
+  after: string; // 변경 값 (M열)
+  reason: string; // 변경 사유 (N열)
 };
 
 const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1KwU6JWp-DG_Kr7Ng4Z5zLB_xpxH6o5SZutwXPB5VLM8/edit?gid=991199097#gid=991199097";
+  "https://docs.google.com/spreadsheets/d/1WLlj8Grf74Rdxj5ugFCXj55EFojIc_ZEXTJmO0BWJOo/edit?usp=sharing";
 
 // 🔹 Machine → Unit 목록
 const UNIT_OPTIONS: Record<string, string[]> = {
@@ -34,11 +36,13 @@ export default function NewFormPage() {
   const initialAssy = "";
 
   const [form, setForm] = useState<FormPayload>({
-    targetLine: "2-1",
+    targetLine: "1-1호기",
     machine: initialMachine,
     unit: initialUnit,
+    category: "티칭값 변경",
     assy: initialAssy,
     actionTime: "",
+    requester: "",
     actioner: "",
     parameterName: "",
     before: "",
@@ -58,12 +62,15 @@ export default function NewFormPage() {
     if (!f.machine)
       return "Machine을 선택해주세요. (Please select the machine.)";
     if (!f.unit.trim()) return "Unit을 선택해주세요. (Please select the unit.)";
+    if (!f.category) return "유형을 선택해주세요. (Please enter the category.)";
     if (!f.assy.trim())
       return "Ass'y를 입력해주세요. (Please enter the assembly.)";
     if (!f.actionTime.trim())
       return "변경 시간을 입력해주세요. (Please enter the change time.)";
+    if (!f.requester.trim())
+      return "요청자를 입력해주세요. (Please enter the name of requester.')";
     if (!f.actioner.trim())
-      return "변경자를 입력해주세요. (Please enter the person who made the change.)";
+      return "변경자를 입력해주세요. (Please enter the name of the person who made the change.)";
     if (!f.parameterName.trim())
       return "변경한 Parameter를 입력해주세요. (Please enter the parameter changed.)";
     if (!f.before.trim())
@@ -133,17 +140,19 @@ export default function NewFormPage() {
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
   const previewText = `[파라미터 수정사항 공유] [Parameter Change Update]
-  1. 시간(Time) : ${formattedNow}
-  2. 대상 호기(Line) : ${F(form.targetLine)}
-  3. Machine : ${F(form.machine)}
-  4. Unit : ${F(form.unit)}
-  5. Ass'y : ${F(form.assy)}
-  6. 변경 시간(Changed Time) : ${F(form.actionTime)}
-  7. 변경자(Person In Charge) : ${F(form.actioner)}
-  8. 변경 Parameter(Changed Parameter) : ${F(form.parameterName)}
-  9. 이전 값(Previous Value) : ${F(form.before)}
-  10. 변경 값(Changed Value) : ${F(form.after)}
-  11. 변경 사유(Reason For The Change) : ${F(form.reason)}
+  ■시간(Time) : ${formattedNow}
+  ■대상 호기(Line) : ${F(form.targetLine)}
+  ■Machine : ${F(form.machine)}
+  ■Category : ${F(form.category)}
+  ■Unit : ${F(form.unit)}
+  ■Ass'y : ${F(form.assy)}
+  ■변경 시간(Changed Time) : ${F(form.actionTime)}
+  ■요청자(Requester) : ${F(form.requester)}
+  ■변경자(Person In Charge) : ${F(form.actioner)}
+  ■변경 Parameter(Changed Parameter) : ${F(form.parameterName)}
+  ■이전 값(Previous Value) : ${F(form.before)}
+  ■변경 값(Changed Value) : ${F(form.after)}
+  ■변경 사유(Reason For The Change) : ${F(form.reason)}
   `;
 
   // 2단계: 실제 업로드 (녹색 버튼)
@@ -183,8 +192,10 @@ export default function NewFormPage() {
         targetLine: "2-1호기",
         machine: initialMachine,
         unit: initialUnit,
+        category: "티칭값 변경",
         assy: initialAssy,
         actionTime: "",
+        requester: "",
         actioner: "",
         parameterName: "",
         before: "",
@@ -281,6 +292,29 @@ export default function NewFormPage() {
             </div>
           </div>
 
+          {/* Category */}
+          <div>
+            <label className="block mb-1 font-medium">
+              변경 유형(Category)
+            </label>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+            >
+              <option value="티칭값 변경">
+                티칭값 변경 (Teaching Value Change)
+              </option>
+              <option value="기구물 조정">
+                기구물 조정 (Mechanical Adjustment)
+              </option>
+              <option value="세팅값 조정">
+                세팅값 조정 (Setting Value Adjustment)
+              </option>
+            </select>
+          </div>
+
           {/* Ass'y */}
           <div>
             <label className="block mb-1 font-medium">Ass' y</label>
@@ -304,18 +338,32 @@ export default function NewFormPage() {
               className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
             />
           </div>
+          <div className="flex gap-4">
+            {/* 요청자 */}
+            <div className="flex-1">
+              <label className="block mb-1 font-medium">
+                요청자(Requester)
+              </label>
+              <input
+                name="requester"
+                value={form.requester}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+              />
+            </div>
 
-          {/* 변경자 */}
-          <div>
-            <label className="block mb-1 font-medium">
-              변경자(Person In Charge)
-            </label>
-            <input
-              name="actioner"
-              value={form.actioner}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
-            />
+            {/* 변경자 */}
+            <div className="flex-1">
+              <label className="block mb-1 font-medium">
+                변경자(Person In Charge)
+              </label>
+              <input
+                name="actioner"
+                value={form.actioner}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+              />
+            </div>
           </div>
 
           {/* 변경 Parameter */}

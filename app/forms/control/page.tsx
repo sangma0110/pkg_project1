@@ -45,8 +45,6 @@ export default function NewFormPage() {
       return "요청자를 입력해주세요. (Please enter the requester.)";
     if (!f.requestDetail.trim())
       return "요청 내용을 입력해주세요. (Please enter the request details.)";
-    if (!f.actionDetail.trim())
-      return "조치 내용을 입력해주세요. (Please enter the action details.)";
     return null;
   };
 

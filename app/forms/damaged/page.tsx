@@ -7,9 +7,11 @@ type Status = null | "loading" | "success" | "error";
 type FormPayload = {
   damagedLine: string; // 파손 호기 (C열)
   item: string; // 품목 (D열)
-  modelNumber: string; // 형변 (E열)
-  quantity: string; // 수량 (F열)
-  supplyMethod: string; // 수급 방법 (G열)
+  modelNumber: string; // 형번 (E열)
+  reason: string; // 파손 원인 (F열)
+  quantity: string; // 수량 (G열)
+  supplyMethod: string; // 수급 방법 (H열)
+  spare: string; // Spare 대체 현황 (I열)
 };
 
 const SHEET_URL =
@@ -17,11 +19,13 @@ const SHEET_URL =
 
 export default function NewFormPage() {
   const [form, setForm] = useState<FormPayload>({
-    damagedLine: "2-1",
+    damagedLine: "1-1호기",
     item: "",
     modelNumber: "",
+    reason: "",
     quantity: "",
     supplyMethod: "",
+    spare: "",
   });
 
   const [status, setStatus] = useState<Status>(null);
@@ -36,6 +40,8 @@ export default function NewFormPage() {
     if (!f.item) return "품목을 입력해주세요. (Please enter the item.)";
     if (!f.modelNumber.trim())
       return "형번을 입력해주세요. (Please enter the model number.)";
+    if (!f.reason.trim())
+      return "파손 원인을 입력해주세요. (Please enter the cause of the damage.)";
     if (!f.quantity.trim())
       return "수량을 입력해주세요. (Please enter the quantity.)";
     if (!f.supplyMethod.trim())
@@ -99,11 +105,13 @@ export default function NewFormPage() {
       );
       setShowPreview(false);
       setForm({
-        damagedLine: "2-1",
+        damagedLine: "1-1호기",
         item: "",
         modelNumber: "",
+        reason: "",
         quantity: "",
         supplyMethod: "",
+        spare: "",
       });
     } catch (err: any) {
       setStatus("error");
@@ -122,12 +130,13 @@ export default function NewFormPage() {
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
   const previewText = `[파손품 조치 이력 공유] [Damaged Item Action History Sharing]
-  1. 시간(Time) : ${formattedNow}
-  2. 파손 호기(Damaged Line) : ${F(form.damagedLine)}
-  3. 품목(Item) : ${F(form.item)}
-  4. 형번(Model Number) : ${F(form.modelNumber)}
-  5. 수량(Quantity) : ${F(form.quantity)}
-  6. 수급 방법(Supply Method) : ${F(form.supplyMethod)} `;
+  ■시간(Time) : ${formattedNow}
+  ■파손 호기(Damaged Line) : ${F(form.damagedLine)}
+  ■품목(Item) : ${F(form.item)}
+  ■형번(Model Number) : ${F(form.modelNumber)}
+  ■파손 원인(Reason) : ${F(form.reason)}
+  ■수량(Quantity) : ${F(form.quantity)}
+  ■수급 방법(Supply Method) : ${F(form.supplyMethod)} `;
 
   return (
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
@@ -198,6 +207,19 @@ export default function NewFormPage() {
           {/* 형번 */}
           <div>
             <label className="block mb-1 font-medium">형번(Model Number)</label>
+            <textarea
+              name="modelNumber"
+              value={form.modelNumber}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
+            />
+          </div>
+
+          {/* 파손 원인 */}
+          <div>
+            <label className="block mb-1 font-medium">
+              파손 원인(Cause of the Damage)
+            </label>
             <textarea
               name="modelNumber"
               value={form.modelNumber}

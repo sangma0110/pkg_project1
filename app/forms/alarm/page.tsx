@@ -5,27 +5,35 @@ import { useState, FormEvent, ChangeEvent } from "react";
 type Status = null | "loading" | "success" | "error";
 
 type FormPayload = {
-  targetLine: string; // 대상 호기 (C열)
-  actionTime: string; // 일시 (D열)
-  alarmCode: string; // 알람 코드 (E열)
-  symptom: string; // 현상 (F열)
-  reason: string; // 원인 (G열)
-  actionDetail: string; // 조치 내용 (H열)
-  actioner: string; // 조치 인원 (I열)
+  actionDate: string; // 일자 (C열)
+  startTime: string; // 시작시간 (D열)
+  endTime: string; // 종료시간 (E열)
+  targetLine: string; // 대상 호기 (F열)
+  machine: string; // Machine (G열)
+  alarmCode: string; // 알람 코드 (H열)
+  symptom: string; // 현상 (I열)
+  reason: string; // 원인 (J열)
+  actionDetail: string; // 조치 내용 (K열)
+  actioner: string; // 조치 인원 (L열)
+  status: string; // 완료 여부 (M열)
 };
 
 const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1KwU6JWp-DG_Kr7Ng4Z5zLB_xpxH6o5SZutwXPB5VLM8/edit?gid=991199097#gid=991199097";
+  "https://docs.google.com/spreadsheets/d/1BC8Znp2zTWjSXsWRfR7kuHAwRVVOMXkje5mxWa7Uce8/edit?usp=sharing";
 
 export default function NewFormPage() {
   const [form, setForm] = useState<FormPayload>({
-    targetLine: "2-1",
-    actionTime: "",
+    actionDate: "",
+    startTime: "",
+    endTime: "",
+    targetLine: "1-1호기",
+    machine: "TW",
     alarmCode: "",
     symptom: "",
     reason: "",
     actionDetail: "",
     actioner: "",
+    status: "",
   });
 
   const [status, setStatus] = useState<Status>(null);
@@ -33,12 +41,22 @@ export default function NewFormPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const formatDateMMDD = (dateString: string) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split("-");
+    return `${month}/${day}`;
+  };
+
   // --- 공통 유효성 검사 ---
   const validateForm = (f: FormPayload): string | null => {
+    if (!f.actionDate) return "일자를 선택해주세요. (Please select the date)";
+    if (!f.startTime)
+      return "시작 시간을 선택해주세요. (Please select the start time)";
+    if (!f.endTime)
+      return "종료 시간을 선택해주세요. (Please select the end time)";
     if (!f.targetLine)
       return "대상 호기를 선택해주세요. (Please select the line.)";
-    if (!f.actionTime)
-      return "조치 날짜 & 시간을 입력해주세요. (Please enter the action date & time.)";
+    if (!f.machine) return "Machine 을 선택해주세요. (Please select the line.)";
     if (!f.alarmCode.trim())
       return "알람 코드를 입력해주세요. (Please enter the alarm code.)";
     if (!f.symptom.trim())
@@ -48,7 +66,7 @@ export default function NewFormPage() {
     if (!f.actionDetail.trim())
       return "조치 사항을 입력해주세요. (Please enter the action details.)";
     if (!f.actioner.trim())
-      return "조치 인원을 선택해주세요. (Please select the person in charge.)";
+      return "조치 인원을 입력해주세요. (Please select the person in charge.)";
     return null;
   };
 
@@ -106,13 +124,17 @@ export default function NewFormPage() {
       setStatus("success");
       setShowPreview(false);
       setForm({
-        targetLine: "2-1",
-        actionTime: "",
+        actionDate: "",
+        startTime: "",
+        endTime: "",
+        targetLine: "1-1호기",
+        machine: "TW",
         alarmCode: "",
         symptom: "",
         reason: "",
         actionDetail: "",
         actioner: "",
+        status: "",
       });
     } catch (err: any) {
       setStatus("error");
@@ -130,14 +152,13 @@ export default function NewFormPage() {
 
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
-  const previewText = `[Alarm 조치 이력 공유] [Alarm Action History Sharing]
-  1. 시간(Time) : ${formattedNow}
-  2. 대상 호기(Line) : ${F(form.targetLine)}
-  3. 조치 날짜 & 시간(Action Date & Time) : ${F(form.actionTime)}
-  4. 현상(Symptom) : ${F(form.symptom)}
-  5. 원인(Cause) : ${F(form.reason)}
-  6. 조치 사항(Action Detail) : ${F(form.actionDetail)}
-  7. 조치 인원(Person In Charge) : ${F(form.actioner)}`;
+  const previewText = `
+  ■호기: ${F(form.targetLine)}
+  ■일시: ${formatDateMMDD(form.actionDate)}(${form.startTime}~${form.endTime})
+  ■현상: ${F(form.alarmCode) + F(form.symptom)}
+  ■원인: ${F(form.reason)}
+  ■조치사항: ${F(form.actionDetail)}
+  ■조치인원: ${F(form.actioner)}`;
 
   return (
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">
@@ -173,6 +194,51 @@ export default function NewFormPage() {
           onSubmit={handleSubmit}
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
         >
+          <div className="flex gap-4">
+            {/* 일자 */}
+            <div className="flex-1">
+              <label className="block font-medium mb-1">일자(Date)</label>
+              <input
+                type="date"
+                name="actionDate"
+                value={form.actionDate}
+                onChange={handleChange}
+                className="border rounded p-2 w-full"
+                required
+              />
+            </div>
+
+            {/* 시작 시간 */}
+            <div className="flex-1">
+              <label className="block font-medium mb-1">
+                시작 시간(Start Time)
+              </label>
+              <input
+                type="time"
+                name="startTime"
+                value={form.startTime}
+                onChange={handleChange}
+                className="border rounded p-2 w-full"
+                required
+              />
+            </div>
+
+            {/* 종료 시간 */}
+            <div className="flex-1">
+              <label className="block font-medium mb-1">
+                종료 시간(End Time)
+              </label>
+              <input
+                type="time"
+                name="endTime"
+                value={form.endTime}
+                onChange={handleChange}
+                className="border rounded p-2 w-full"
+                required
+              />
+            </div>
+          </div>
+
           {/* 대상 호기 + Machine */}
           <div className="flex gap-4">
             <div className="flex-1">
@@ -191,19 +257,19 @@ export default function NewFormPage() {
                 <option value="3-2호기">3-2</option>
               </select>
             </div>
-          </div>
-
-          {/* 조치 시간 */}
-          <div>
-            <label className="block mb-1 font-medium">
-              조치 시간(Action Date & Time)
-            </label>
-            <textarea
-              name="actionTime"
-              value={form.actionTime}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
-            />
+            <div className="flex-1">
+              <label className="block mb-1 font-medium">Machine</label>
+              <select
+                name="machine"
+                value={form.machine}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+              >
+                <option value="TW">TW</option>
+                <option value="CA">CA</option>
+                <option value="EL">EL</option>
+              </select>
+            </div>
           </div>
 
           {/* 알람 코드 */}
