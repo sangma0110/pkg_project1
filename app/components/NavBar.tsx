@@ -16,11 +16,11 @@ export default function Navbar() {
   return (
     <nav className="w-full bg-white text-black shadow-sm fixed top-0 left-0 z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-l font-bold">
+        <Link href="/" className="text-m font-bold">
           ESST PKG 관리 시스템
         </Link>
 
-        <div className="flex gap-6 text-s font-medium relative select-none">
+        <div className="flex gap-6 text-xs font-medium relative select-none">
           {/* 신규 등록 */}
           <div
             className="relative cursor-pointer"
