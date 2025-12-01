@@ -108,7 +108,6 @@ export default function NewFormPage() {
 
     try {
       await navigator.clipboard.writeText(previewText);
-      setSuccessMessage("업로드 및 클립보드에 Text 가 복사 되었습니다.");
 
       const res = await fetch("/api/forms?type=alarm", {
         method: "POST",
@@ -122,6 +121,7 @@ export default function NewFormPage() {
       }
 
       setStatus("success");
+      setSuccessMessage("업로드 및 클립보드에 Text 가 복사 되었습니다.");
       setShowPreview(false);
       setForm({
         actionDate: "",
@@ -155,7 +155,7 @@ export default function NewFormPage() {
   const previewText = `
   ■호기: ${F(form.targetLine)} ${F(form.machine)}
   ■일시: ${formatDateMMDD(form.actionDate)}(${form.startTime}~${form.endTime})
-  ■현상: ${F(form.alarmCode) + F(form.symptom)}
+  ■현상: [${F(form.alarmCode)}] ${F(form.symptom)}
   ■원인: ${F(form.reason)}
   ■조치사항: ${F(form.actionDetail)}
   ■조치인원: ${F(form.actioner)}`;
