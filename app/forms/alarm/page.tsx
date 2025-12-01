@@ -153,7 +153,7 @@ export default function NewFormPage() {
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
   const previewText = `
-  ■호기: ${F(form.targetLine)}
+  ■호기: ${F(form.targetLine)} ${F(form.machine)}
   ■일시: ${formatDateMMDD(form.actionDate)}(${form.startTime}~${form.endTime})
   ■현상: ${F(form.alarmCode) + F(form.symptom)}
   ■원인: ${F(form.reason)}
