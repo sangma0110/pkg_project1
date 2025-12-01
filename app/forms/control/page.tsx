@@ -169,7 +169,7 @@ export default function NewFormPage() {
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
         >
           {/* 대상 호기 + Machine */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block mb-1 font-medium">대상 호기(Line)</label>
               <select
@@ -186,6 +186,7 @@ export default function NewFormPage() {
                 <option value="3-2호기">3-2</option>
               </select>
             </div>
+
             <div className="flex-1">
               <label className="block mb-1 font-medium">Machine</label>
               <select
