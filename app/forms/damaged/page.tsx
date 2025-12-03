@@ -279,11 +279,42 @@ export default function NewFormPage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white disabled:opacity-40"
+                className={`
+    w-full px-4 py-3 rounded border font-semibold transition-all
+    ${
+      status === "loading"
+        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+        : "bg-white text-black hover:bg-black hover:text-white"
+    }
+  `}
               >
-                {status === "loading"
-                  ? "전송 중... (Sending...)"
-                  : "업로드 및 Text 복사 (Upload & Copy Text)"}
+                {status === "loading" ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <svg
+                      className="animate-spin h-5 w-5 text-gray-600"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
+                    </svg>
+                    전송 중... (Sending...)
+                  </div>
+                ) : (
+                  "업로드 및 Text 복사 (Upload & Copy)"
+                )}
               </button>
 
               <a
