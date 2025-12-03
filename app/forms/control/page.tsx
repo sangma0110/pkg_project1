@@ -15,7 +15,7 @@ type FormPayload = {
 };
 
 const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1KwU6JWp-DG_Kr7Ng4Z5zLB_xpxH6o5SZutwXPB5VLM8/edit?gid=991199097#gid=991199097";
+  "https://docs.google.com/spreadsheets/d/1KwU6JWp-DG_Kr7Ng4Z5zLB_xpxH6o5SZutwXPB5VLM8/edit?usp=sharing";
 
 export default function NewFormPage() {
   const [form, setForm] = useState<FormPayload>({

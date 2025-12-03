@@ -234,8 +234,8 @@ export default function NewFormPage() {
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
         >
           {/* Line + Machine + Unit */}
-          <div className="flex gap-4">
-            <div className="flex-1">
+          <div className="flex gap-4 min-w-0">
+            <div className="flex-1 min-w-0">
               <label className="block mb-1 font-medium">대상 호기(Line)</label>
               <select
                 name="targetLine"
@@ -252,7 +252,7 @@ export default function NewFormPage() {
               </select>
             </div>
 
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <label className="block mb-1 font-medium">Machine</label>
               <select
                 name="machine"
@@ -266,7 +266,7 @@ export default function NewFormPage() {
               </select>
             </div>
 
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <label className="block mb-1 font-medium">Unit</label>
               <select
                 name="unit"
@@ -292,7 +292,7 @@ export default function NewFormPage() {
               name="category"
               value={form.category}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 bg-white"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
             >
               <option value="티칭값 변경">티칭값 변경</option>
               <option value="기구물 조정">기구물 조정</option>
@@ -307,12 +307,12 @@ export default function NewFormPage() {
               name="assy"
               value={form.assy}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 bg-white min-h-[80px]"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
             />
           </div>
 
           {/* 변경 시간 */}
-          <div>
+          <div className="min-w-0">
             <label className="block mb-1 font-medium">
               변경 시간(Changed Time)
             </label>
@@ -321,7 +321,7 @@ export default function NewFormPage() {
               name="actionTime"
               value={form.actionTime}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 bg-white"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               required
             />
           </div>
@@ -444,7 +444,8 @@ export default function NewFormPage() {
                 rel="noreferrer"
                 className="w-full text-center px-4 py-3 rounded border bg-white text-black font-semibold hover:bg-black hover:text-white"
               >
-                ESST 파라미터 관리 이력 Sheet 열기
+                ESST 파라미터 관리 이력 Sheet 열기 (Open ESST Parameter History
+                Sheet)
               </a>
             </div>
           )}

@@ -194,22 +194,22 @@ export default function NewFormPage() {
           onSubmit={handleSubmit}
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
         >
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 min-w-0">
             {/* 일자 */}
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <label className="block font-medium mb-1">일자(Date)</label>
               <input
                 type="date"
                 name="actionDate"
                 value={form.actionDate}
                 onChange={handleChange}
-                className="border rounded p-2 w-full"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
                 required
               />
             </div>
 
             {/* 시작 시간 */}
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <label className="block font-medium mb-1">
                 시작 시간(Start Time)
               </label>
@@ -218,13 +218,13 @@ export default function NewFormPage() {
                 name="startTime"
                 value={form.startTime}
                 onChange={handleChange}
-                className="border rounded p-2 w-full"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
                 required
               />
             </div>
 
             {/* 종료 시간 */}
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <label className="block font-medium mb-1">
                 종료 시간(End Time)
               </label>
@@ -233,7 +233,7 @@ export default function NewFormPage() {
                 name="endTime"
                 value={form.endTime}
                 onChange={handleChange}
-                className="border rounded p-2 w-full"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
                 required
               />
             </div>
@@ -241,7 +241,7 @@ export default function NewFormPage() {
 
           {/* 대상 호기 + Machine */}
           <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <label className="block mb-1 font-medium">대상 호기(Line)</label>
               <select
                 name="targetLine"
@@ -258,7 +258,7 @@ export default function NewFormPage() {
               </select>
             </div>
 
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <label className="block mb-1 font-medium">Machine</label>
               <select
                 name="machine"
@@ -282,7 +282,7 @@ export default function NewFormPage() {
               name="alarmCode"
               value={form.alarmCode}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
             />
           </div>
 
@@ -376,8 +376,7 @@ export default function NewFormPage() {
                 rel="noreferrer"
                 className="w-full text-center px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
               >
-                ESST Alarm 조치 이력 Sheet 열기 (Open ESST Alarm Action History
-                Sheet)
+                ESST Alarm 조치 이력 Sheet 열기 (Open ESST Alarm History Sheet)
               </a>
 
               {status === "success" && (

@@ -79,7 +79,7 @@ export default function DamagedViewPage() {
         {/* 스프레드시트 스타일 테이블 */}
         <div className="overflow-x-auto border rounded">
           <table className="min-w-full text-sm">
-            <thead className="bg-[#5b2e90] text-white">
+            <thead className="bg-gray-100">
               <tr>
                 {COLUMNS.map((col) => (
                   <th

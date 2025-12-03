@@ -11,7 +11,7 @@ type FormPayload = {
   reason: string; // 파손 원인 (F열)
   quantity: string; // 수량 (G열)
   supplyMethod: string; // 수급 방법 (H열)
-  spare: string; // Spare 대체 현황 (I열)
+  spareStatus: string; // Spare 대체 현황 (I열)
 };
 
 const SHEET_URL =
@@ -25,7 +25,7 @@ export default function NewFormPage() {
     reason: "",
     quantity: "",
     supplyMethod: "",
-    spare: "",
+    spareStatus: "",
   });
 
   const [status, setStatus] = useState<Status>(null);
@@ -111,7 +111,7 @@ export default function NewFormPage() {
         reason: "",
         quantity: "",
         supplyMethod: "",
-        spare: "",
+        spareStatus: "",
       });
     } catch (err: any) {
       setStatus("error");
@@ -292,8 +292,8 @@ export default function NewFormPage() {
                 rel="noreferrer"
                 className="w-full text-center px-4 py-2 rounded border rounded bg-white text-black font-semibold hover:bg-black hover:text-white"
               >
-                ESST 파손품 관리 이력 Sheet 열기 (Open Damaged Item Action
-                History Sheet)
+                ESST 파손품 관리 이력 Sheet 열기 (Open ESST Damaged Item History
+                Sheet)
               </a>
 
               {status === "success" && (

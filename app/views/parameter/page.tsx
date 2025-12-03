@@ -112,7 +112,9 @@ export default function ParameterViewPage() {
                   {COLUMNS.map((col) => {
                     const isLongText =
                       col === "Assy'" ||
-                      col === "변경 파라미터" ||
+                      col === "Unit" ||
+                      col === "요청자" ||
+                      col === "변경자" ||
                       col === "이전 값" ||
                       col === "변경 값" ||
                       col === "변경 사유";
