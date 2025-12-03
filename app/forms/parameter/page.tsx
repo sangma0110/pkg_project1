@@ -241,7 +241,7 @@ export default function NewFormPage() {
                 name="targetLine"
                 value={form.targetLine}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2 bg-white"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               >
                 <option value="1-1호기">1-1</option>
                 <option value="1-2호기">1-2</option>
@@ -258,7 +258,7 @@ export default function NewFormPage() {
                 name="machine"
                 value={form.machine}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2 bg-white"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               >
                 <option value="TW">TW</option>
                 <option value="CA">CA</option>
@@ -272,7 +272,7 @@ export default function NewFormPage() {
                 name="unit"
                 value={form.unit}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2 bg-white"
+                className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               >
                 {unitList.map((u) => (
                   <option key={u} value={u}>
@@ -362,7 +362,7 @@ export default function NewFormPage() {
               name="parameterName"
               value={form.parameterName}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 bg-white min-h-[80px]"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
             />
           </div>
 
@@ -375,7 +375,7 @@ export default function NewFormPage() {
               name="before"
               value={form.before}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 bg-white min-h-[80px]"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
             />
           </div>
 
@@ -388,7 +388,7 @@ export default function NewFormPage() {
               name="after"
               value={form.after}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 bg-white min-h-[80px]"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
             />
           </div>
 
@@ -401,7 +401,7 @@ export default function NewFormPage() {
               name="reason"
               value={form.reason}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2 bg-white min-h-[80px]"
+              className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
             />
           </div>
 
