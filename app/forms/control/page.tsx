@@ -127,13 +127,13 @@ export default function NewFormPage() {
   const F = (v?: string) => (v && v.trim() ? v.trim() : "-");
 
   const previewText = `[제어 요청 공유] [Control Request Sharing]
-  1. 시간(Time) : ${formattedNow}
-  2. 대상 호기(Line) : ${F(form.targetLine)}
-  3. Machine : ${F(form.machine)}
-  4. 현상(Symptom) : ${F(form.symptom)}
-  5. 요청자(Requester) : ${F(form.requester)}
-  6. 요청 내용(Request Detail) : ${F(form.requestDetail)}
-  7. 조치(Action Detail) : ${F(form.actionDetail)}`;
+  ■시간(Time) : ${formattedNow}
+  ■대상 호기(Line) : ${F(form.targetLine)}
+  ■Machine : ${F(form.machine)}
+  ■현상(Symptom) : ${F(form.symptom)}
+  ■요청자(Requester) : ${F(form.requester)}
+  ■요청 내용(Request Detail) : ${F(form.requestDetail)}
+  ■조치(Action Detail) : ${F(form.actionDetail)}`;
 
   return (
     <div className="min-h-screen bg-white text-black flex items-start justify-center pt-16 px-4">

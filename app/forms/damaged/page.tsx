@@ -8,7 +8,7 @@ type FormPayload = {
   damagedLine: string; // 파손 호기 (C열)
   item: string; // 품목 (D열)
   modelNumber: string; // 형번 (E열)
-  reason: string; // 파손 원인 (F열)
+  damagedReason: string; // 파손 원인 (F열)
   quantity: string; // 수량 (G열)
   supplyMethod: string; // 수급 방법 (H열)
   spareStatus: string; // Spare 대체 현황 (I열)
@@ -22,7 +22,7 @@ export default function NewFormPage() {
     damagedLine: "1-1호기",
     item: "",
     modelNumber: "",
-    reason: "",
+    damagedReason: "",
     quantity: "",
     supplyMethod: "",
     spareStatus: "",
@@ -40,7 +40,7 @@ export default function NewFormPage() {
     if (!f.item) return "품목을 입력해주세요. (Please enter the item.)";
     if (!f.modelNumber.trim())
       return "형번을 입력해주세요. (Please enter the model number.)";
-    if (!f.reason.trim())
+    if (!f.damagedReason.trim())
       return "파손 원인을 입력해주세요. (Please enter the cause of the damage.)";
     if (!f.quantity.trim())
       return "수량을 입력해주세요. (Please enter the quantity.)";
@@ -108,7 +108,7 @@ export default function NewFormPage() {
         damagedLine: "1-1호기",
         item: "",
         modelNumber: "",
-        reason: "",
+        damagedReason: "",
         quantity: "",
         supplyMethod: "",
         spareStatus: "",
@@ -134,7 +134,7 @@ export default function NewFormPage() {
   ■파손 호기(Damaged Line) : ${F(form.damagedLine)}
   ■품목(Item) : ${F(form.item)}
   ■형번(Model Number) : ${F(form.modelNumber)}
-  ■파손 원인(Reason) : ${F(form.reason)}
+  ■파손 원인(Damaged Reason) : ${F(form.damagedReason)}
   ■수량(Quantity) : ${F(form.quantity)}
   ■수급 방법(Supply Method) : ${F(form.supplyMethod)} `;
 
@@ -221,8 +221,8 @@ export default function NewFormPage() {
               파손 원인(Cause of the Damage)
             </label>
             <textarea
-              name="reason"
-              value={form.reason}
+              name="damagedReason"
+              value={form.damagedReason}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2 bg-white min-h-[80px]"
             />
