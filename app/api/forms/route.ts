@@ -126,8 +126,43 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = (await req.json()) as FormRow;
+    const rawBody = (await req.json()) as FormRow;
 
+    /**********************************************
+     * 🔹 시트 타입별 필드 이름 정규화 (중요!!)
+     **********************************************/
+    let body: FormRow = rawBody;
+
+    if (type === "damaged") {
+      body = {
+        ...rawBody,
+        // Apps Script가 읽는 필드 이름: reason
+        reason: (rawBody as any).reason ?? (rawBody as any).damagedReason ?? "",
+      };
+    }
+
+    if (type === "alarm") {
+      body = {
+        ...rawBody,
+        // 필요 시 alarm도 매핑 가능 (현재는 변경 없음)
+      };
+    }
+
+    if (type === "control") {
+      body = {
+        ...rawBody,
+      };
+    }
+
+    if (type === "param") {
+      body = {
+        ...rawBody,
+      };
+    }
+
+    /**********************************************
+     * Google Apps Script POST
+     **********************************************/
     const res = await fetch(url, {
       method: "POST",
       headers: {
