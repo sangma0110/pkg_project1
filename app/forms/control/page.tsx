@@ -178,7 +178,6 @@ export default function NewFormPage() {
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               >
-                <option value="All">All</option>
                 <option value="1-1호기">1-1</option>
                 <option value="1-2호기">1-2</option>
                 <option value="2-1호기">2-1</option>
@@ -196,6 +195,7 @@ export default function NewFormPage() {
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
               >
+                <option value="All">All</option>
                 <option value="TW">TW</option>
                 <option value="CA">CA</option>
                 <option value="EL">EL</option>
