@@ -176,6 +176,11 @@ export default function NewFormPage() {
           on-site actions—will be shared accordingly.
         </p>
 
+        <p className="text-xs text-gray-500 mt-2">
+          <span className="text-red-500">*</span> 필수 입력 항목입니다.
+          (Required fields)
+        </p>
+
         <form
           onSubmit={handleSubmit}
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
@@ -183,7 +188,9 @@ export default function NewFormPage() {
           {/* 대상 호기 + Machine */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
-              <label className="block mb-1 font-medium">대상 호기(Line)</label>
+              <label className="block mb-1 font-medium">
+                대상 호기(Line)<span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="targetLine"
                 value={form.targetLine}
@@ -200,7 +207,9 @@ export default function NewFormPage() {
             </div>
 
             <div className="flex-1">
-              <label className="block mb-1 font-medium">Machine</label>
+              <label className="block mb-1 font-medium">
+                Machine<span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="machine"
                 value={form.machine}
@@ -217,7 +226,9 @@ export default function NewFormPage() {
 
           {/* 현상 */}
           <div>
-            <label className="block mb-1 font-medium">현상(Symptom)</label>
+            <label className="block mb-1 font-medium">
+              현상(Symptom)<span className="text-red-500 ml-1">*</span>
+            </label>
             <textarea
               name="symptom"
               value={form.symptom}
@@ -228,7 +239,9 @@ export default function NewFormPage() {
 
           {/* 요청자 */}
           <div>
-            <label className="block mb-1 font-medium">요청자(Requester)</label>
+            <label className="block mb-1 font-medium">
+              요청자(Requester)<span className="text-red-500 ml-1">*</span>
+            </label>
             <input
               name="requester"
               value={form.requester}
@@ -241,6 +254,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               요청 내용(Request Detail)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="requestDetail"
