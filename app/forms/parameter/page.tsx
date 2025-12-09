@@ -158,13 +158,24 @@ export default function NewFormPage() {
 ■변경 사유(Reason For The Change) : ${F(form.reason)}
 `;
 
-  // --- 업로드 제출 ---
+  const handleCopyPreview = async () => {
+    try {
+      await navigator.clipboard.writeText(previewText);
+      setStatus(null);
+      setErrorMessage("");
+      setSuccessMessage("Text가 클립보드에 복사되었습니다.");
+    } catch {
+      setStatus("error");
+      setErrorMessage(
+        "클립보드 복사가 차단되었습니다. 브라우저 보안 설정을 확인해주세요."
+      );
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const cleaned = trimPayload(form);
-
-    const err = validateForm(cleaned);
+    const err = validateForm(form);
     if (err) {
       setStatus("error");
       setErrorMessage(err);
@@ -173,23 +184,13 @@ export default function NewFormPage() {
 
     setStatus("loading");
     setErrorMessage("");
+    setSuccessMessage(null);
 
     try {
-      // 🔹 datetime-local → DB 포맷 "YYYY-MM-DD HH:mm:ss"
-      let actionTime = cleaned.actionTime;
-      if (actionTime.includes("T")) {
-        actionTime = actionTime.replace("T", " ") + ":00";
-      }
-
-      const payload = { ...cleaned, actionTime };
-
-      // 🔹 클립보드 복사
-      await navigator.clipboard.writeText(previewText);
-
-      const res = await fetch("/api/forms?type=param", {
+      const res = await fetch("/api/forms?type=control", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(form),
       });
 
       const json = await res.json();
@@ -198,10 +199,9 @@ export default function NewFormPage() {
       }
 
       setStatus("success");
-      setSuccessMessage("업로드 및 클립보드 복사 완료");
+      setSuccessMessage("업로드가 완료되었습니다. (Uploaded successfully.)");
       setShowPreview(false);
 
-      // 🔹 폼 초기화
       setForm({
         targetLine: "2-1호기",
         machine: initialMachine,
@@ -229,6 +229,31 @@ export default function NewFormPage() {
           ESST Parameter 관리 이력 Form
         </h1>
 
+        <p className="text-l font-bold mb-8 text-center">
+          ESST 파라미터 관리 이력 관리 시트로 관리 사항 업데이트 부탁 드립니다.
+          <br />
+          (현장에서 즉 조치 필요 사항 제외 모두 조치 양식 맞춰서 진행 부탁
+          드립니다.)
+          <br />
+          현장에서 발생하는 즉 조치 사항 제외 추가적인 요청 사항이나, 조치
+          완료된 사항 내역 공유 예정입니다.
+          <br />
+          <br />
+          Please update the management details using the ESST Parameter
+          Management History Sheet.
+          <br />
+          (Except for issues that require immediate on-site action, please
+          follow the action form format.)
+          <br />
+          Additional requests or completed action details—excluding urgent
+          on-site actions—will be shared accordingly.
+        </p>
+
+        <p className="text-xs text-gray-500 mt-2">
+          <span className="text-red-500">*</span> 필수 입력 항목입니다.
+          (Required fields)
+        </p>
+
         <form
           onSubmit={handleSubmit}
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
@@ -236,7 +261,9 @@ export default function NewFormPage() {
           {/* Line + Machine + Unit */}
           <div className="flex gap-4 min-w-0">
             <div className="flex-1 min-w-0">
-              <label className="block mb-1 font-medium">대상 호기(Line)</label>
+              <label className="block mb-1 font-medium">
+                대상 호기(Line)<span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="targetLine"
                 value={form.targetLine}
@@ -253,7 +280,9 @@ export default function NewFormPage() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <label className="block mb-1 font-medium">Machine</label>
+              <label className="block mb-1 font-medium">
+                Machine<span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="machine"
                 value={form.machine}
@@ -267,7 +296,9 @@ export default function NewFormPage() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <label className="block mb-1 font-medium">Unit</label>
+              <label className="block mb-1 font-medium">
+                Unit<span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="unit"
                 value={form.unit}
@@ -286,7 +317,7 @@ export default function NewFormPage() {
           {/* Category */}
           <div>
             <label className="block mb-1 font-medium">
-              변경 유형(Category)
+              변경 유형(Category)<span className="text-red-500 ml-1">*</span>
             </label>
             <select
               name="category"
@@ -302,7 +333,9 @@ export default function NewFormPage() {
 
           {/* Ass'y */}
           <div>
-            <label className="block mb-1 font-medium">Ass'y</label>
+            <label className="block mb-1 font-medium">
+              Ass'y<span className="text-red-500 ml-1">*</span>
+            </label>
             <textarea
               name="assy"
               value={form.assy}
@@ -315,6 +348,7 @@ export default function NewFormPage() {
           <div className="min-w-0">
             <label className="block mb-1 font-medium">
               변경 시간(Changed Time)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <input
               type="datetime-local"
@@ -330,7 +364,7 @@ export default function NewFormPage() {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block mb-1 font-medium">
-                요청자(Requester)
+                요청자(Requester)<span className="text-red-500 ml-1">*</span>
               </label>
               <input
                 name="requester"
@@ -343,6 +377,7 @@ export default function NewFormPage() {
             <div className="flex-1">
               <label className="block mb-1 font-medium">
                 변경자(Person In Charge)
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <input
                 name="actioner"
@@ -357,6 +392,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               변경한 파라미터(Changed Parameter)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="parameterName"
@@ -370,6 +406,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               이전 값(Previous Value)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="before"
@@ -382,7 +419,7 @@ export default function NewFormPage() {
           {/* 변경 값 */}
           <div>
             <label className="block mb-1 font-medium">
-              변경 값(Changed Value)
+              변경 값(Changed Value)<span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="after"
@@ -396,6 +433,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               변경 사유(Reason For The Change)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="reason"
@@ -428,6 +466,19 @@ export default function NewFormPage() {
                 {previewText}
               </pre>
 
+              {/* ✅ Text 복사 버튼 (clipboard 전용) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault(); // form submit 완전 차단
+                  handleCopyPreview();
+                }}
+                className="w-full px-4 py-3 rounded border font-semibold bg-white text-black hover:bg-black hover:text-white"
+              >
+                Text 복사 (Copy Text)
+              </button>
+
+              {/* ✅ 업로드 버튼 (submit 전용) */}
               <button
                 type="submit"
                 disabled={status === "loading"}
@@ -455,17 +506,17 @@ export default function NewFormPage() {
                         r="10"
                         stroke="currentColor"
                         strokeWidth="4"
-                      ></circle>
+                      />
                       <path
                         className="opacity-75"
                         fill="currentColor"
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      ></path>
+                      />
                     </svg>
                     전송 중... (Sending...)
                   </div>
                 ) : (
-                  "업로드 및 Text 복사 (Upload & Copy)"
+                  "업로드 (Upload)"
                 )}
               </button>
 

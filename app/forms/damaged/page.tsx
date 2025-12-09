@@ -71,7 +71,20 @@ export default function NewFormPage() {
     setShowPreview(true);
   };
 
-  // 2단계: 실제 업로드 (녹색 버튼)
+  const handleCopyPreview = async () => {
+    try {
+      await navigator.clipboard.writeText(previewText);
+      setStatus(null);
+      setErrorMessage("");
+      setSuccessMessage("Text가 클립보드에 복사되었습니다.");
+    } catch {
+      setStatus("error");
+      setErrorMessage(
+        "클립보드 복사가 차단되었습니다. 브라우저 보안 설정을 확인해주세요."
+      );
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -84,11 +97,10 @@ export default function NewFormPage() {
 
     setStatus("loading");
     setErrorMessage("");
+    setSuccessMessage(null);
 
     try {
-      await navigator.clipboard.writeText(previewText);
-
-      const res = await fetch("/api/forms?type=damaged", {
+      const res = await fetch("/api/forms?type=control", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -100,10 +112,9 @@ export default function NewFormPage() {
       }
 
       setStatus("success");
-      setSuccessMessage(
-        "업로드 및 클립보드에 Text 가 복사 되었습니다. (Uploaded and copied to clipboard.)"
-      );
+      setSuccessMessage("업로드가 완료되었습니다. (Uploaded successfully.)");
       setShowPreview(false);
+
       setForm({
         damagedLine: "1-1호기",
         item: "",
@@ -167,6 +178,11 @@ export default function NewFormPage() {
           on-site actions—will be shared accordingly.
         </p>
 
+        <p className="text-xs text-gray-500 mt-2">
+          <span className="text-red-500">*</span> 필수 입력 항목입니다.
+          (Required fields)
+        </p>
+
         <form
           onSubmit={handleSubmit}
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
@@ -176,6 +192,7 @@ export default function NewFormPage() {
             <div className="flex-1">
               <label className="block mb-1 font-medium">
                 파손 호기(Damaged Line)
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <select
                 name="damagedLine"
@@ -195,7 +212,9 @@ export default function NewFormPage() {
 
           {/* 품목 */}
           <div>
-            <label className="block mb-1 font-medium">품목(Item)</label>
+            <label className="block mb-1 font-medium">
+              품목(Item)<span className="text-red-500 ml-1">*</span>
+            </label>
             <textarea
               name="item"
               value={form.item}
@@ -206,7 +225,9 @@ export default function NewFormPage() {
 
           {/* 형번 */}
           <div>
-            <label className="block mb-1 font-medium">형번(Model Number)</label>
+            <label className="block mb-1 font-medium">
+              형번(Model Number)<span className="text-red-500 ml-1">*</span>
+            </label>
             <textarea
               name="modelNumber"
               value={form.modelNumber}
@@ -219,6 +240,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               파손 원인(Cause of the Damage)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="damagedReason"
@@ -230,7 +252,9 @@ export default function NewFormPage() {
 
           {/* 수량 */}
           <div>
-            <label className="block mb-1 font-medium">수량(Quantity)</label>
+            <label className="block mb-1 font-medium">
+              수량(Quantity)<span className="text-red-500 ml-1">*</span>
+            </label>
             <textarea
               name="quantity"
               value={form.quantity}
@@ -243,6 +267,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               수급 방법(Supply Method)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="supplyMethod"
@@ -276,6 +301,19 @@ export default function NewFormPage() {
                 {previewText}
               </pre>
 
+              {/* ✅ Text 복사 버튼 (clipboard 전용) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault(); // form submit 완전 차단
+                  handleCopyPreview();
+                }}
+                className="w-full px-4 py-3 rounded border font-semibold bg-white text-black hover:bg-black hover:text-white"
+              >
+                Text 복사 (Copy Text)
+              </button>
+
+              {/* ✅ 업로드 버튼 (submit 전용) */}
               <button
                 type="submit"
                 disabled={status === "loading"}
@@ -303,17 +341,17 @@ export default function NewFormPage() {
                         r="10"
                         stroke="currentColor"
                         strokeWidth="4"
-                      ></circle>
+                      />
                       <path
                         className="opacity-75"
                         fill="currentColor"
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      ></path>
+                      />
                     </svg>
                     전송 중... (Sending...)
                   </div>
                 ) : (
-                  "업로드 및 Text 복사 (Upload & Copy)"
+                  "업로드 (Upload)"
                 )}
               </button>
 

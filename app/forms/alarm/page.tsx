@@ -92,7 +92,20 @@ export default function NewFormPage() {
     setShowPreview(true);
   };
 
-  // 2단계: 실제 업로드 (녹색 버튼)
+  const handleCopyPreview = async () => {
+    try {
+      await navigator.clipboard.writeText(previewText);
+      setStatus(null);
+      setErrorMessage("");
+      setSuccessMessage("Text가 클립보드에 복사되었습니다.");
+    } catch {
+      setStatus("error");
+      setErrorMessage(
+        "클립보드 복사가 차단되었습니다. 브라우저 보안 설정을 확인해주세요."
+      );
+    }
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -105,11 +118,10 @@ export default function NewFormPage() {
 
     setStatus("loading");
     setErrorMessage("");
+    setSuccessMessage(null);
 
     try {
-      await navigator.clipboard.writeText(previewText);
-
-      const res = await fetch("/api/forms?type=alarm", {
+      const res = await fetch("/api/forms?type=control", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -121,8 +133,9 @@ export default function NewFormPage() {
       }
 
       setStatus("success");
-      setSuccessMessage("업로드 및 클립보드에 Text 가 복사 되었습니다.");
+      setSuccessMessage("업로드가 완료되었습니다. (Uploaded successfully.)");
       setShowPreview(false);
+
       setForm({
         actionDate: "",
         startTime: "",
@@ -190,6 +203,11 @@ export default function NewFormPage() {
           <br />
         </p>
 
+        <p className="text-xs text-gray-500 mt-2">
+          <span className="text-red-500">*</span> 필수 입력 항목입니다.
+          (Required fields)
+        </p>
+
         <form
           onSubmit={handleSubmit}
           className="w-full flex flex-col gap-5 bg-white p-6 border rounded-xl shadow-sm"
@@ -197,7 +215,9 @@ export default function NewFormPage() {
           <div className="flex flex-col md:flex-row gap-4 min-w-0">
             {/* 일자 */}
             <div className="flex-1 min-w-0">
-              <label className="block font-medium mb-1">일자(Date)</label>
+              <label className="block font-medium mb-1">
+                일자(Date)<span className="text-red-500 ml-1">*</span>
+              </label>
               <input
                 type="date"
                 name="actionDate"
@@ -212,6 +232,7 @@ export default function NewFormPage() {
             <div className="flex-1 min-w-0">
               <label className="block font-medium mb-1">
                 시작 시간(Start Time)
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <input
                 type="time"
@@ -226,7 +247,7 @@ export default function NewFormPage() {
             {/* 종료 시간 */}
             <div className="flex-1 min-w-0">
               <label className="block font-medium mb-1">
-                종료 시간(End Time)
+                종료 시간(End Time)<span className="text-red-500 ml-1">*</span>
               </label>
               <input
                 type="time"
@@ -242,7 +263,9 @@ export default function NewFormPage() {
           {/* 대상 호기 + Machine */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 min-w-0">
-              <label className="block mb-1 font-medium">대상 호기(Line)</label>
+              <label className="block mb-1 font-medium">
+                대상 호기(Line)<span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="targetLine"
                 value={form.targetLine}
@@ -259,7 +282,9 @@ export default function NewFormPage() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <label className="block mb-1 font-medium">Machine</label>
+              <label className="block mb-1 font-medium">
+                Machin<span className="text-red-500 ml-1">*</span>e
+              </label>
               <select
                 name="machine"
                 value={form.machine}
@@ -276,7 +301,7 @@ export default function NewFormPage() {
           {/* 알람 코드 */}
           <div>
             <label className="block mb-1 font-medium">
-              알람 코드(Alarm Code)
+              알람 코드(Alarm Code)<span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="alarmCode"
@@ -288,7 +313,9 @@ export default function NewFormPage() {
 
           {/* 현상 */}
           <div>
-            <label className="block mb-1 font-medium">현상(Symptom)</label>
+            <label className="block mb-1 font-medium">
+              현상(Symptom)<span className="text-red-500 ml-1">*</span>
+            </label>
             <textarea
               name="symptom"
               value={form.symptom}
@@ -299,7 +326,9 @@ export default function NewFormPage() {
 
           {/* 원인 */}
           <div>
-            <label className="block mb-1 font-medium">원인(Cause)</label>
+            <label className="block mb-1 font-medium">
+              원인(Cause)<span className="text-red-500 ml-1">*</span>
+            </label>
             <input
               name="reason"
               value={form.reason}
@@ -312,6 +341,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               조치 내용(Action Detail)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="actionDetail"
@@ -325,6 +355,7 @@ export default function NewFormPage() {
           <div>
             <label className="block mb-1 font-medium">
               조치 인원(Person In Charge)
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               name="actioner"
@@ -360,6 +391,19 @@ export default function NewFormPage() {
                 {previewText}
               </pre>
 
+              {/* ✅ Text 복사 버튼 (clipboard 전용) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault(); // form submit 완전 차단
+                  handleCopyPreview();
+                }}
+                className="w-full px-4 py-3 rounded border font-semibold bg-white text-black hover:bg-black hover:text-white"
+              >
+                Text 복사 (Copy Text)
+              </button>
+
+              {/* ✅ 업로드 버튼 (submit 전용) */}
               <button
                 type="submit"
                 disabled={status === "loading"}
@@ -387,17 +431,17 @@ export default function NewFormPage() {
                         r="10"
                         stroke="currentColor"
                         strokeWidth="4"
-                      ></circle>
+                      />
                       <path
                         className="opacity-75"
                         fill="currentColor"
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      ></path>
+                      />
                     </svg>
                     전송 중... (Sending...)
                   </div>
                 ) : (
-                  "업로드 및 Text 복사 (Upload & Copy)"
+                  "업로드 (Upload)"
                 )}
               </button>
 
