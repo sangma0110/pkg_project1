@@ -108,14 +108,13 @@ export default function AlarmViewPage() {
               {pageRows.map((row, rowIndex) => (
                 <tr key={startIndex + rowIndex} className="hover:bg-gray-50">
                   {COLUMNS.map((col) => {
-                    const rowKey = mapColumnToKey(col);
-                    const value = (row as any)[rowKey];
-
                     const isLongText =
-                      col.includes("Symptom") ||
-                      col.includes("알람 코드") ||
-                      col.includes("조치 내용") ||
-                      col.includes("원인");
+                      col === "현상(Symptom)" ||
+                      col === "알람 코드" ||
+                      col === "조치 인원(Requester)" ||
+                      col === "조치 내용(Action Detail)";
+
+                    const value = (row as any)[col];
 
                     return (
                       <td
@@ -223,27 +222,4 @@ function formatCell(value: any, col: string): string {
   }
 
   return String(value);
-}
-
-function mapColumnToKey(col: string): string {
-  // 괄호 안에 영어가 있으면 그것만 key 로 사용
-  const match = col.match(/\((.*?)\)/);
-  if (match) {
-    return match[1] // 예: (Requester) → "Requester"
-      .replace(/\s+/g, "") // 공백 제거
-      .replace(/[A-Z]/, (m) => m.toLowerCase()); // 첫 글자 소문자 requester
-  }
-
-  // 괄호가 없는 경우 → 한글을 영어 key 로 미리 매핑
-  const dictionary: Record<string, string> = {
-    일자: "date",
-    "시작 시간": "startTime",
-    "종료 시간": "endTime",
-    원인: "cause",
-    "조치 인원": "requester",
-    "대상 호기(Line)": "targetLine",
-    "알람 코드": "alarmCode",
-  };
-
-  return dictionary[col] ?? col;
 }
