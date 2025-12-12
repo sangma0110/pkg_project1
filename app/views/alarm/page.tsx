@@ -111,7 +111,7 @@ export default function AlarmViewPage() {
                     const isLongText =
                       col === "현상(Symptom)" ||
                       col === "알람 코드" ||
-                      col === "원인" ||
+                      col === "원인(Cause)" ||
                       col === "조치 내용(Action Detail)";
 
                     const value = (row as any)[col];
