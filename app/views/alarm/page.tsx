@@ -114,7 +114,8 @@ export default function AlarmViewPage() {
                       col === "조치 인원(Requester)" ||
                       col === "조치 내용(Action Detail)";
 
-                    const value = (row as any)[col];
+                    const key = columnToKey(col);
+                    const value = (row as any)[key];
 
                     return (
                       <td
@@ -222,4 +223,23 @@ function formatCell(value: any, col: string): string {
   }
 
   return String(value);
+}
+
+function columnToKey(col: string): string {
+  if (col.includes("(Requester)")) return "requester";
+  if (col.includes("(Action Detail)")) return "actionDetail";
+  if (col.includes("(Symptom)")) return "symptom";
+  if (col.includes("(Completion Status)")) return "completion";
+
+  // 한글 컬럼 매핑
+  if (col === "일자") return "date";
+  if (col === "시작 시간") return "startTime";
+  if (col === "종료 시간") return "endTime";
+  if (col === "대상 호기(Line)") return "targetLine";
+  if (col === "Machine") return "machine";
+  if (col === "알람 코드") return "alarmCode";
+  if (col === "원인") return "cause";
+  if (col === "No.") return "no";
+
+  return col; // fallback
 }
