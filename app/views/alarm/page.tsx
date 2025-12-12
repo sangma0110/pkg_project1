@@ -13,19 +13,19 @@ const PAGE_SIZE = 20;
 
 /** 🔹 Alarm Sheet에 맞는 컬럼들 */
 const COLUMNS = [
-  "No.",
-  "타임스탬프(TimeStamp)",
-  "일자",
-  "시작 시간",
-  "종료 시간",
-  "대상 호기(Line)",
-  "Machine",
-  "알람 코드",
-  "현상(Symptom)",
-  "원인",
-  "조치 내용(Action Detail)",
-  "조치 인원(Requester)",
-  "여부(Completion Status)",
+  { header: "No.", key: "no" },
+  { header: "타임스탬프(TimeStamp)", key: "timestamp" },
+  { header: "일자", key: "date" },
+  { header: "시작 시간", key: "startTime" },
+  { header: "종료 시간", key: "endTime" },
+  { header: "대상 호기(Line)", key: "targetLine" },
+  { header: "Machine", key: "machine" },
+  { header: "알람 코드", key: "alarmCode" },
+  { header: "현상(Symptom)", key: "symptom" },
+  { header: "원인", key: "cause" },
+  { header: "조치 내용(Action Detail)", key: "actionDetail" },
+  { header: "조치 인원(Requester)", key: "requester" },
+  { header: "여부(Completion Status)", key: "completion" },
 ];
 
 export default function AlarmViewPage() {
@@ -95,10 +95,10 @@ export default function AlarmViewPage() {
               <tr>
                 {COLUMNS.map((col) => (
                   <th
-                    key={col}
+                    key={col.key}
                     className="px-3 py-2 border-b text-left font-bold text-gray-900 whitespace-nowrap"
                   >
-                    {col}
+                    {col.header}
                   </th>
                 ))}
               </tr>
@@ -108,17 +108,17 @@ export default function AlarmViewPage() {
               {pageRows.map((row, rowIndex) => (
                 <tr key={startIndex + rowIndex} className="hover:bg-gray-50">
                   {COLUMNS.map((col) => {
-                    const isLongText =
-                      col === "현상(Symptom)" ||
-                      col === "알람 코드" ||
-                      col === "원인" ||
-                      col === "조치 내용(Action Detail)";
+                    const value = (row as any)[col.key];
 
-                    const value = (row as any)[col];
+                    const isLongText =
+                      col.key === "symptom" ||
+                      col.key === "alarmCode" ||
+                      col.key === "cause" ||
+                      col.key === "actionDetail";
 
                     return (
                       <td
-                        key={col}
+                        key={col.key}
                         className={[
                           "px-3 py-2 border-b text-gray-800 align-top",
                           isLongText
@@ -126,7 +126,7 @@ export default function AlarmViewPage() {
                             : "whitespace-nowrap",
                         ].join(" ")}
                       >
-                        {formatCell(value, col)}
+                        {formatCell(value, col.header)}
                       </td>
                     );
                   })}
@@ -165,15 +165,52 @@ export default function AlarmViewPage() {
   );
 }
 
-/** 🔹 타임스탬프 formatting */
 function formatCell(value: any, col: string): string {
   if (value == null) return "";
 
-  if (col === "타임스탬프(TimeStamp)" || col.toLowerCase().includes("time")) {
-    const date = value instanceof Date ? value : new Date(value);
+  // 🔹 1) 일자(Date)
+  if (col === "일자") {
+    // 이미 YYYY-MM-DD 형태면 그대로 리턴
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+
+    // 날짜 + 시간일 경우 날짜만 추출
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      return date.toISOString().slice(0, 10); // YYYY-MM-DD
+    }
+
+    return String(value);
+  }
+
+  // 🔹 2) 시작 시간 / 종료 시간: HH:mm 형태로 (엑셀 숫자 방지)
+  if (col === "시작 시간" || col === "종료 시간") {
+    // 이미 "14:55" 형태면 그대로
+    if (/^\d{1,2}:\d{2}$/.test(value)) return value;
+
+    // 엑셀에서 9.52 같은 숫자는 "9:52"로 변환
+    if (typeof value === "number") {
+      const hours = Math.floor(value);
+      const minutes = Math.round((value - hours) * 60);
+      return `${hours}:${String(minutes).padStart(2, "0")}`;
+    }
+
+    // Date 객체 들어올 경우
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      const hh = String(date.getHours()).padStart(2, "0");
+      const mm = String(date.getMinutes()).padStart(2, "0");
+      return `${hh}:${mm}`;
+    }
+
+    return String(value);
+  }
+
+  // 🔹 3) 타임스탬프(TimeStamp)
+  if (col === "타임스탬프(TimeStamp)") {
+    const date = new Date(value);
     if (isNaN(date.getTime())) return String(value);
 
-    const options: Intl.DateTimeFormatOptions = {
+    return date.toLocaleString("en-CA", {
       timeZone: "America/Toronto",
       year: "numeric",
       month: "2-digit",
@@ -181,12 +218,7 @@ function formatCell(value: any, col: string): string {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-    };
-
-    return new Intl.DateTimeFormat("en-CA", options)
-      .format(date)
-      .replace(",", "")
-      .trim();
+    });
   }
 
   return String(value);
