@@ -13,19 +13,19 @@ const PAGE_SIZE = 20;
 
 /** 🔹 Alarm Sheet에 맞는 컬럼들 */
 const COLUMNS = [
-  { header: "No.", key: "no" },
-  { header: "타임스탬프(TimeStamp)", key: "timestamp" },
-  { header: "일자", key: "date" },
-  { header: "시작 시간", key: "startTime" },
-  { header: "종료 시간", key: "endTime" },
-  { header: "대상 호기(Line)", key: "targetLine" },
-  { header: "Machine", key: "machine" },
-  { header: "알람 코드", key: "alarmCode" },
-  { header: "현상(Symptom)", key: "symptom" },
-  { header: "원인", key: "cause" },
-  { header: "조치 내용(Action Detail)", key: "actionDetail" },
-  { header: "조치 인원(Requester)", key: "requester" },
-  { header: "여부(Completion Status)", key: "completion" },
+  "No.",
+  "타임스탬프(TimeStamp)",
+  "일자",
+  "시작 시간",
+  "종료 시간",
+  "대상 호기(Line)",
+  "Machine",
+  "알람 코드",
+  "현상(Symptom)",
+  "원인",
+  "조치 내용(Action Detail)",
+  "조치 인원(Requester)",
+  "여부(Completion Status)",
 ];
 
 export default function AlarmViewPage() {
@@ -95,10 +95,10 @@ export default function AlarmViewPage() {
               <tr>
                 {COLUMNS.map((col) => (
                   <th
-                    key={col.key}
+                    key={col}
                     className="px-3 py-2 border-b text-left font-bold text-gray-900 whitespace-nowrap"
                   >
-                    {col.header}
+                    {col}
                   </th>
                 ))}
               </tr>
@@ -108,17 +108,17 @@ export default function AlarmViewPage() {
               {pageRows.map((row, rowIndex) => (
                 <tr key={startIndex + rowIndex} className="hover:bg-gray-50">
                   {COLUMNS.map((col) => {
-                    const value = (row as any)[col.key];
-
                     const isLongText =
-                      col.key === "symptom" ||
-                      col.key === "alarmCode" ||
-                      col.key === "cause" ||
-                      col.key === "actionDetail";
+                      col === "현상(Symptom)" ||
+                      col === "알람 코드" ||
+                      col === "원인" ||
+                      col === "조치 내용(Action Detail)";
+
+                    const value = (row as any)[col];
 
                     return (
                       <td
-                        key={col.key}
+                        key={col}
                         className={[
                           "px-3 py-2 border-b text-gray-800 align-top",
                           isLongText
@@ -126,7 +126,7 @@ export default function AlarmViewPage() {
                             : "whitespace-nowrap",
                         ].join(" ")}
                       >
-                        {formatCell(value, col.header)}
+                        {formatCell(value, col)}
                       </td>
                     );
                   })}
