@@ -29,9 +29,24 @@ const UNIT_OPTIONS: Record<string, string[]> = {
   EL: ["Cell Loader", "EL Filling", "Cell Unloader"],
 };
 
-const formatPreviewTime = (v?: string) => {
+const formatTorontoDateTime = (v?: string) => {
   if (!v || !v.trim()) return "-";
-  return v.includes("T") ? v.replace("T", " ") : v;
+
+  // datetime-local 값 → Date 객체
+  const date = new Date(v);
+
+  const formatter = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "America/Toronto",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  // sv-SE → YYYY-MM-DD HH:mm 형식
+  return formatter.format(date).replace(" ", " ");
 };
 
 // 🔹 모든 문자열 trim 처리 함수
@@ -149,7 +164,7 @@ export default function NewFormPage() {
 ■Category : ${F(form.category)}
 ■Unit : ${F(form.unit)}
 ■Ass'y : ${F(form.assy)}
-■변경 시간(Changed Time) : ${formatPreviewTime(form.actionTime)}
+■변경 시간(Changed Time) : ${formatTorontoDateTime(form.actionTime)}
 ■요청자(Requester) : ${F(form.requester)}
 ■변경자(Person In Charge) : ${F(form.actioner)}
 ■변경 Parameter(Changed Parameter) : ${F(form.parameterName)}

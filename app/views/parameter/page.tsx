@@ -170,15 +170,20 @@ export default function ParameterViewPage() {
   );
 }
 
-/** 🔹 타임스탬프 Formatting */
 function formatCell(value: any, col: string): string {
-  if (value == null) return "";
+  if (value == null || value === "") return "";
 
-  if (col === "타임스탬프(TimeStamp)" || col.toLowerCase().includes("time")) {
-    const date = value instanceof Date ? value : new Date(value);
+  // 시간 관련 컬럼만 처리
+  if (
+    col === "타임스탬프(TimeStamp)" ||
+    col === "변경 시간" ||
+    col.toLowerCase().includes("time")
+  ) {
+    const date = new Date(value);
     if (isNaN(date.getTime())) return String(value);
 
-    const options: Intl.DateTimeFormatOptions = {
+    // sv-SE → YYYY-MM-DD HH:mm
+    return new Intl.DateTimeFormat("sv-SE", {
       timeZone: "America/Toronto",
       year: "numeric",
       month: "2-digit",
@@ -186,12 +191,7 @@ function formatCell(value: any, col: string): string {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-    };
-
-    return new Intl.DateTimeFormat("en-CA", options)
-      .format(date)
-      .replace(",", "")
-      .trim();
+    }).format(date);
   }
 
   return String(value);
